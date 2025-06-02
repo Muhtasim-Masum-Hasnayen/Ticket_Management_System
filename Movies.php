@@ -121,10 +121,50 @@
     <div class="row g-4 mt-1" id="moviesGrid">
       <!-- Movie cards will be here -->
 
+      <!-- Borbad -->
+      <div class="col-md-4 movie-item" data-title="Borbad" data-genre="Action" data-origin="Bangladeshi">
+        <div class="movie-card">
+          <img src="Borbaad.jpg" alt="Borbad Poster" class="movie-poster" />
+          <div class="movie-body">
+            <div class="movie-title">Borbad</div>
+            <div class="movie-meta">Action | 2h 5m | Released: 2023</div>
+            <p>An intense action-thriller showcasing the underworld of Dhaka.</p>
+            <button class="btn-book" onclick="alert('Booking feature coming soon!')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jongli -->
+      <div class="col-md-4 movie-item" data-title="Jongli" data-genre="Drama" data-origin="Bangladeshi">
+        <div class="movie-card">
+          <img src="Jongli.jpg" alt="Jongli Poster" class="movie-poster" />
+          <div class="movie-body">
+            <div class="movie-title">Jongli</div>
+            <div class="movie-meta">Drama | 1h 50m | Released: 2023</div>
+            <p>A gripping tale of survival, identity, and wilderness in rural Bangladesh.</p>
+            <button class="btn-book" onclick="alert('Booking feature coming soon!')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dagi -->
+      <div class="col-md-4 movie-item" data-title="Dagi" data-genre="Thriller" data-origin="Bangladeshi">
+        <div class="movie-card">
+          <img src="Daagi.jpg" alt="Dagi Poster" class="movie-poster" />
+          <div class="movie-body">
+            <div class="movie-title">Dagi</div>
+            <div class="movie-meta">Thriller | 2h 10m | Released: 2024</div>
+            <p>A mystery that unravels secrets buried deep in the heart of a small town.</p>
+            <button class="btn-book" onclick="alert('Booking feature coming soon!')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+
       <!-- Sample Movie Card -->
       <div class="col-md-4 movie-item" data-title="Dhaka Dreams" data-genre="Drama" data-origin="Bangladeshi">
         <div class="movie-card">
-          <img src="https://upload.wikimedia.org/wikipedia/en/7/7d/Dhaka_Dreams_poster.jpg" alt="Dhaka Dreams Poster" class="movie-poster" />
+          <img src="Dhaka Dreams.jpg" alt="Dhaka Dreams Poster" class="movie-poster" />
           <div class="movie-body">
             <div class="movie-title">Dhaka Dreams</div>
             <div class="movie-meta">Drama | 2h 10m | Released: 2023</div>
@@ -136,7 +176,7 @@
 
       <div class="col-md-4 movie-item" data-title="The Avengers" data-genre="Action" data-origin="Hollywood">
         <div class="movie-card">
-          <img src="https://upload.wikimedia.org/wikipedia/en/f/f9/The_Avengers_%282012_film%29_poster.jpg" alt="The Avengers Poster" class="movie-poster" />
+          <img src="Avengers.jpg" alt="The Avengers Poster" class="movie-poster" />
           <div class="movie-body">
             <div class="movie-title">The Avengers</div>
             <div class="movie-meta">Action | 2h 23m | Released: 2012</div>
@@ -148,7 +188,7 @@
 
       <div class="col-md-4 movie-item" data-title="Monpura" data-genre="Romance" data-origin="Bangladeshi">
         <div class="movie-card">
-          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Monpura_poster.jpg" alt="Monpura Poster" class="movie-poster" />
+          <img src="Monpura.jpg" alt="Monpura Poster" class="movie-poster" />
           <div class="movie-body">
             <div class="movie-title">Monpura</div>
             <div class="movie-meta">Romance | 2h 5m | Released: 2009</div>
@@ -160,7 +200,7 @@
 
       <div class="col-md-4 movie-item" data-title="Inception" data-genre="Thriller" data-origin="Hollywood">
         <div class="movie-card">
-          <img src="https://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg" alt="Inception Poster" class="movie-poster" />
+          <img src="Inception.jpg" alt="Inception Poster" class="movie-poster" />
           <div class="movie-body">
             <div class="movie-title">Inception</div>
             <div class="movie-meta">Thriller | 2h 28m | Released: 2010</div>
@@ -172,7 +212,7 @@
 
       <div class="col-md-4 movie-item" data-title="Television" data-genre="Drama" data-origin="Bangladeshi">
         <div class="movie-card">
-          <img src="https://upload.wikimedia.org/wikipedia/en/e/e7/Television_2012_film_poster.jpg" alt="Television Poster" class="movie-poster" />
+          <img src="টেলিভিশন.jpg" alt="Television Poster" class="movie-poster" />
           <div class="movie-body">
             <div class="movie-title">Television</div>
             <div class="movie-meta">Drama | 1h 50m | Released: 2012</div>
@@ -184,7 +224,7 @@
 
       <div class="col-md-4 movie-item" data-title="Titanic" data-genre="Romance" data-origin="Hollywood">
         <div class="movie-card">
-          <img src="https://upload.wikimedia.org/wikipedia/en/2/2e/Titanic_poster.jpg" alt="Titanic Poster" class="movie-poster" />
+          <img src="Titanic.jpg" alt="Titanic Poster" class="movie-poster" />
           <div class="movie-body">
             <div class="movie-title">Titanic</div>
             <div class="movie-meta">Romance | 3h 14m | Released: 1997</div>

@@ -1,3 +1,6 @@
+<!-- Save this as login.php -->
+
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,11 +79,10 @@
     <h2 class="mb-4">Smart<span class="text-warning">Ticket</span> Login</h2>
 
     <form action="login_process.php" method="POST">
-     <div class="mb-3 text-start">
-       <label for="phone" class="form-label fw-semibold">Phone Number</label>
-       <input type="tel" class="form-control" id="phone" name="phone" placeholder="01XXXXXXXXX" pattern="01[0-9]{9}" required />
-     </div>
-
+      <div class="mb-3 text-start">
+        <label for="phone" class="form-label fw-semibold">Phone Number</label>
+        <input type="tel" class="form-control" id="phone" name="phone" placeholder="01XXXXXXXXX" pattern="01[0-9]{9}" required />
+      </div>
 
       <div class="mb-4 text-start">
         <label for="password" class="form-label fw-semibold">Password</label>
