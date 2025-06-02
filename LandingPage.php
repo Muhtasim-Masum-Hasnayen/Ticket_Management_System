@@ -131,7 +131,7 @@
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="#parks">Parks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="#museums">Museums</a>
+          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Museums.php">Museums</a>
         </li>
         <li class="nav-item">
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="My_Ticket.php">My Tickets</a>
