@@ -134,7 +134,7 @@
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="#museums">Museums</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="#mytickets">My Tickets</a>
+          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="My_Ticket.php">My Tickets</a>
         </li>
         <li class="nav-item">
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Contact.php">Contact</a>
@@ -184,6 +184,8 @@
     "military museum.jpg",
     "military museum1.jpg",
     "WaterKingdom1.jpg",
+    "movies.jpg",
+    "Fantasy.jpg",
     "Liberationwarmuseum.jpg"
   ];
   let current = 0;
