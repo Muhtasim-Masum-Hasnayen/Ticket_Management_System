@@ -94,6 +94,19 @@
       color: white;
       padding: 30px 0;
     }
+    body.dark-mode {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    .dark-mode section {
+      background: linear-gradient(to right, #333, #444, #555);
+    }
+
+    .dark-mode a, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode p {
+      color: #11f1c2c !important;
+    }
+
   </style>
 </head>
 
@@ -139,6 +152,11 @@
         <li class="nav-item">
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Contact.php">Contact</a>
         </li>
+        <!-- Dark Mode Toggle -->
+        <div id="darkModeToggle" style="position: fixed; top: 200px; right: 20px; z-index: 9999; cursor: pointer; font-size: 34px;">
+          🌙
+        </div>
+
       </ul>
     </div>
   </div>
@@ -241,6 +259,9 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
     </div>
   </section>
 
+
+
+
   <!-- Features -->
   <section class="features py-5 bg-light">
     <div class="container text-center">
@@ -280,6 +301,28 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const toggle = document.getElementById('darkModeToggle');
+  const body = document.body;
+
+  // Load preference
+  if (localStorage.getItem('darkMode') === 'enabled') {
+    body.classList.add('dark-mode');
+    toggle.textContent = '☀️';
+  }
+
+  toggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    if (body.classList.contains('dark-mode')) {
+      toggle.textContent = '☀️';
+      localStorage.setItem('darkMode', 'enabled');
+    } else {
+      toggle.textContent = '🌙';
+      localStorage.setItem('darkMode', 'disabled');
+    }
+  });
+</script>
+
 </body>
 
 </html>

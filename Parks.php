@@ -32,7 +32,7 @@
     }
 
     .package-card {
-      background-color: rgba(255, 255, 255, 0.07);
+      background-color: #111111;
       border-radius: 12px;
       padding: 20px;
       margin: 15px 0;
@@ -205,7 +205,7 @@
         <div class="park-card">
           <img src="SubornoGram.jpg" class="img-fluid rounded mb-3" alt="Suborno Gram">
           <h4>Suborno Gram</h4>
-          <p class="text-muted-light">Kuril, Dhaka</p>
+          <p class="text-muted-lig+ht">Kuril, Dhaka</p>
           <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#subornoPackages">View Packages</button>
 
           <div class="collapse mt-3" id="subornoPackages">
@@ -236,7 +236,7 @@
       <!-- Narsingdi Dream Holiday Park -->
       <div class="col-md-6 col-lg-4">
         <div class="park-card">
-          <img src="NarsingdiDream.jpg" class="img-fluid rounded mb-3" alt="Narsingdi Dream Holiday Park">
+          <img src="Dream Holiday Park.jpg" class="img-fluid rounded mb-3" alt="Narsingdi Dream Holiday Park">
           <h4>Dream Holiday Park</h4>
           <p class="text-muted-light">Narsingdi</p>
           <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#dreamPackages">View Packages</button>
