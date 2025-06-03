@@ -122,13 +122,13 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto gap-3">
         <li class="nav-item">
-          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="#">Home</a>
+          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="LandingPage.php">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Movies.php">Movies</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="#parks">Parks</a>
+          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Parks.php">Parks</a>
         </li>
         <li class="nav-item">
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Museums.php">Museums</a>
@@ -218,7 +218,7 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
             <i class="fas fa-film fa-3x mb-3"></i>
             <h4>Movie Tickets</h4>
             <p>Book your seat for the latest blockbuster now!</p>
-            <a href="#" class="btn btn-light btn-sm">Book Now</a>
+            <a href="Movies.php" class="btn btn-light btn-sm">Book Now</a>
           </div>
         </div>
         <div class="col-md-4">
@@ -226,7 +226,7 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
             <i class="fas fa-tree fa-3x mb-3"></i>
             <h4>Park Tickets</h4>
             <p>Relax and enjoy nature in city parks.</p>
-            <a href="#" class="btn btn-light btn-sm">Book Now</a>
+            <a href="Parks.php" class="btn btn-light btn-sm">Book Now</a>
           </div>
         </div>
         <div class="col-md-4">
@@ -234,7 +234,7 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
             <i class="fas fa-landmark fa-3x mb-3"></i>
             <h4>Museum Tickets</h4>
             <p>Discover art, history, and culture today.</p>
-            <a href="#" class="btn btn-light btn-sm">Book Now</a>
+            <a href="Museums.php" class="btn btn-light btn-sm">Book Now</a>
           </div>
         </div>
       </div>
