@@ -17,6 +17,15 @@ if (!in_array($type, $allowed_types)) {
 $error = '';
 $success = '';
 
+
+
+
+$theaters = [];
+if ($type === 'movie') {
+    $stmt = $pdo->query("SELECT theater_id, name, location FROM theaters");
+    $theaters = $stmt->fetchAll();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
@@ -29,10 +38,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($type === 'movie') {
             $stmt = $pdo->prepare("INSERT INTO movies (title, description, duration_minutes, available_tickets, price) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $duration, $available_tickets, $price]);
+
+            $movieId = $pdo->lastInsertId();
+
+            if (!empty($_POST['theaters']) && is_array($_POST['theaters'])) {
+                $insertStmt = $pdo->prepare("INSERT INTO movie_theaters (movie_id, theater_id) VALUES (?, ?)");
+                foreach ($_POST['theaters'] as $theaterId) {
+                    $insertStmt->execute([$movieId, $theaterId]);
+                }
+            }
         } elseif ($type === 'museum') {
             $stmt = $pdo->prepare("INSERT INTO museums (name, description, location, available_tickets, price) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $location, $available_tickets, $price]);
-        } else { // park
+        } else {
             $stmt = $pdo->prepare("INSERT INTO parks (name, description, location, available_tickets, price) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $location, $available_tickets, $price]);
         }
@@ -42,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Error: " . $e->getMessage();
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -83,13 +102,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label>Description:</label>
     <textarea name="description" rows="4"></textarea>
 
-    <?php if ($type === 'movie'): ?>
+
         <label>Duration (minutes):</label>
         <input type="number" name="duration" min="1" required>
-    <?php else: ?>
+
+        <?php if (!empty($theaters)): ?>
+            <label>Select Theaters:</label>
+            <?php foreach ($theaters as $theater): ?>
+                <div>
+                    <label>
+                        <input type="checkbox" name="theaters[]" value="<?= $theater['theater_id'] ?>">
+                        <?= htmlspecialchars($theater['name']) ?> (<?= htmlspecialchars($theater['location']) ?>)
+                    </label>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+
+
+
         <label>Location:</label>
         <input type="text" name="location" required>
-    <?php endif; ?>
+
 
     <label>Available Tickets:</label>
     <input type="number" name="available_tickets" min="0" required>
