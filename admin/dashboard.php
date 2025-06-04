@@ -173,7 +173,7 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
     <h2>Admin Panel</h2>
     <a href="add.php?type=movie">➕ Add Movie</a>
     <a href="add_theater.php">🏛 Add Theater</a>
-    <a href="add.php?type=museum">🖼 Add Museum</a>
+    <a href="add_movie.php?type=Add Movie_Theater">🖼 Add Museum</a>
     <a href="add.php?type=park">🌳 Add Park</a>
     <a href="view_bookings.php">📄 View Bookings</a>
     <a href="logout.php">🚪 Logout</a>
@@ -188,7 +188,7 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
 
 <div class="container">
 
-    <h2>🎬 Movies <a href="add_item.php?type=movie" class="button">Add Movie</a></h2>
+    <h2>🎬 Movies <a href="add_movie.php?type=movie" class="button">Add Movie</a></h2>
     <table>
         <tr>
             <th>ID</th><th>Title</th><th>Duration (min)</th><th>Available Tickets</th><th>Price</th><th>Actions</th>

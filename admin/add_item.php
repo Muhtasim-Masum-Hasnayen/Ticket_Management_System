@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 }
 
 $type = $_GET['type'] ?? '';
-$allowed_types = ['movie', 'museum', 'park'];
+$allowed_types = ['museum', 'park'];
 
 if (!in_array($type, $allowed_types)) {
     die('Invalid type specified.');
@@ -17,11 +17,6 @@ if (!in_array($type, $allowed_types)) {
 $error = '';
 $success = '';
 
-$theaters = [];
-if ($type === 'movie') {
-    $stmt = $pdo->query("SELECT theater_id, name, location FROM theaters");
-    $theaters = $stmt->fetchAll();
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'] ?? '';
@@ -30,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $location = $_POST['location'] ?? '';
     $available_tickets = $_POST['available_tickets'] ?? 0;
     $price = $_POST['price'] ?? 0;
-    $showTime = $_POST['show_time'] ?? null;
+
 
     // Handle photo upload
     $uploadDir = 'uploads/' . $type . 's/';
@@ -56,28 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        if ($type === 'movie') {
-            $stmt = $pdo->prepare("INSERT INTO movies (title, description, duration_minutes, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $duration, $available_tickets, $price, $photoPath]);
-
-            $movieId = $pdo->lastInsertId();
-
-            if (!empty($_POST['theaters']) && is_array($_POST['theaters'])) {
-                $insertStmt = $pdo->prepare("INSERT INTO movie_theaters (movie_id, theater_id) VALUES (?, ?)");
-
-                foreach ($_POST['theaters'] as $theaterId) {
-                    $insertStmt->execute([$movieId, $theaterId]);
-
-                    // Generate dummy seats
-                    $seatNumbers = ['A1', 'A2', 'A3', 'B1', 'B2'];
-                    foreach ($seatNumbers as $seat) {
-                        $stmt = $pdo->prepare("INSERT INTO tickets (movie_id, theater_id, show_time, seat_number, price) VALUES (?, ?, ?, ?, ?)");
-                        $stmt->execute([$movieId, $theaterId, $showTime, $seat, $price]);
-                    }
-                }
-            }
-
-        } elseif ($type === 'museum') {
+         if ($type === 'museum') {
             $stmt = $pdo->prepare("INSERT INTO museums (name, description, location, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $location, $available_tickets, $price, $photoPath]);
 
@@ -115,41 +89,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<h1>Add <?= ucfirst($type) ?></h1>
-<a href="dashboard.php">Back to Dashboard</a>
+<<h1>Add <?= ucfirst($type) ?></h1>
+ <a href="dashboard.php">Back to Dashboard</a>
 
-<?php if ($error): ?>
-    <p class="error"><?= htmlspecialchars($error) ?></p>
-<?php elseif ($success): ?>
-    <p class="success"><?= htmlspecialchars($success) ?></p>
-<?php endif; ?>
+ <?php if ($error): ?>
+     <p class="error"><?= htmlspecialchars($error) ?></p>
+ <?php elseif ($success): ?>
+     <p class="success"><?= htmlspecialchars($success) ?></p>
+ <?php endif; ?>
 
-<form method="POST" enctype="multipart/form-data">
-    <label><?= ($type === 'movie') ? 'Title' : 'Name' ?>:</label>
-    <input type="text" name="title" required>
+ <form method="POST" enctype="multipart/form-data">
+     <label>Name:</label>
+     <input type="text" name="title" required>
 
-    <label>Description:</label>
-    <textarea name="description" rows="4"></textarea>
-
-    <?php if ($type === 'movie'): ?>
-        <label>Duration (minutes):</label>
-        <input type="number" name="duration" min="1" required>
-
-        <?php if (!empty($theaters)): ?>
-            <label>Select Theaters:</label>
-            <?php foreach ($theaters as $theater): ?>
-                <div>
-                    <label>
-                        <input type="checkbox" name="theaters[]" value="<?= $theater['theater_id'] ?>">
-                        <?= htmlspecialchars($theater['name']) ?> (<?= htmlspecialchars($theater['location']) ?>)
-                    </label>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-
-        <label>Show Time:</label>
-        <input type="datetime-local" name="show_time" required>
-    <?php endif; ?>
+     <label>Description:</label>
+     <textarea name="description" rows="4"></textarea>
 
     <label for="location">Location:</label>
     <select name="location" id="location" required>
