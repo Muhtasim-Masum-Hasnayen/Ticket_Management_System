@@ -122,6 +122,45 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
                 font-size: 14px;
             }
         }
+
+
+
+
+                .sidebar {
+                    width: 220px;
+                    background-color: #333;
+                    color: white;
+                    height: 100vh;
+                    padding-top: 20px;
+                    position: fixed;
+                }
+
+                .sidebar h2 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+
+                .sidebar a {
+                    display: block;
+                    color: white;
+                    padding: 12px 20px;
+                    text-decoration: none;
+                }
+
+                .sidebar a:hover {
+                    background-color: #575757;
+                }
+
+                .main-content {
+                    margin-left: 220px;
+                    padding: 20px;
+                    flex-grow: 1;
+                }
+
+                h1 {
+                    margin-top: 0;
+                }
+
     </style>
 </head>
 <body>
@@ -130,6 +169,22 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
     <h1>SmartTicket Admin Dashboard</h1>
     <a href="logout.php" class="logout">Logout</a>
 </header>
+<div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="add.php?type=movie">➕ Add Movie</a>
+    <a href="add_theater.php">🏛 Add Theater</a>
+    <a href="add.php?type=museum">🖼 Add Museum</a>
+    <a href="add.php?type=park">🌳 Add Park</a>
+    <a href="view_bookings.php">📄 View Bookings</a>
+    <a href="logout.php">🚪 Logout</a>
+</div>
+
+<div class="main-content">
+    <h1>Welcome, Admin</h1>
+    <p>Use the sidebar to manage movies, theaters, parks, and museums.</p>
+</div>
+
+
 
 <div class="container">
 
