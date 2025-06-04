@@ -1,144 +1,175 @@
 <?php
-session_start();
 require_once '../db_connect.php';
+session_start();
 
 if (!isset($_SESSION['admin_logged_in'])) {
     header('Location: admin_login.php');
     exit();
 }
 
-$error = '';
-$success = '';
-$theaters = $pdo->query("SELECT theater_id, name, location FROM theaters")->fetchAll();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $duration = $_POST['duration'] ?? null;
-    $available_tickets = $_POST['available_tickets'] ?? 0;
-    $price = $_POST['price'] ?? 0;
-    $location = $_POST['location'] ?? '';
-    $showTime = $_POST['show_time'] ?? null;
-
-    $uploadDir = 'uploads/movies/';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
-    $photoPath = null;
-    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-        $photoTmp = $_FILES['photo']['tmp_name'];
-        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
-
-        if (in_array($ext, $allowedExts)) {
-            $newName = uniqid('photo_') . '.' . $ext;
-            $photoPath = $uploadDir . $newName;
-            move_uploaded_file($photoTmp, $photoPath);
-        } else {
-            $error = "Invalid photo type.";
-        }
-    }
-
-    try {
-        $stmt = $pdo->prepare("INSERT INTO movies (title, description, duration_minutes, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $description, $duration, $available_tickets, $price, $photoPath]);
-        $movieId = $pdo->lastInsertId();
-
-        if (!empty($_POST['theaters']) && is_array($_POST['theaters'])) {
-            $insertStmt = $pdo->prepare("INSERT INTO movie_theaters (movie_id, theater_id) VALUES (?, ?)");
-            foreach ($_POST['theaters'] as $theaterId) {
-                $insertStmt->execute([$movieId, $theaterId]);
-
-                // Dummy seats
-                $seats = ['A1', 'A2', 'A3', 'B1', 'B2'];
-                foreach ($seats as $seat) {
-                    $stmt = $pdo->prepare("INSERT INTO tickets (movie_id, theater_id, show_time, seat_number, price) VALUES (?, ?, ?, ?, ?)");
-                    $stmt->execute([$movieId, $theaterId, $showTime, $seat, $price]);
-                }
-            }
-        }
-
-        $success = "Movie added successfully!";
-    } catch (Exception $e) {
-        $error = "Error: " . $e->getMessage();
-    }
-}
+$movies = $pdo->query("SELECT * FROM movies")->fetchAll();
+$theaters = $pdo->query("SELECT * FROM theaters")->fetchAll();
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Movie - Admin</title>
+    <title>Assign Showtimes</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        form { max-width: 500px; }
-        label { display: block; margin-top: 10px; }
-        input[type="text"], textarea, input[type="number"], input[type="datetime-local"] {
-            width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box;
+        body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
+        h1 { text-align: center; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
-        input[type="submit"] {
-            margin-top: 15px; padding: 10px 20px; background: #28a745; border: none; color: white;
-            border-radius: 4px; cursor: pointer;
+
+        .movie-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.2s;
         }
-        .success { color: green; }
-        .error { color: red; }
+
+        .movie-card:hover {
+            transform: scale(1.02);
+        }
+
+        .movie-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+
+        .movie-title {
+            padding: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            background: red; color: white;
+            border: none; padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form label, form select, form input, .checkbox-group {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .checkbox-group label {
+            margin: 5px 0;
+        }
+
+        .add-time-btn, button[type="submit"] {
+            margin-top: 15px;
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .add-time-btn:hover, button[type="submit"]:hover {
+            background: #0056b3;
+        }
     </style>
+    <script>
+        function openModal(movieId, title) {
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('selectedMovieId').value = movieId;
+            document.getElementById('movieTitle').innerText = title;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function addShowTimeField() {
+            const container = document.getElementById('show-times');
+            const input = document.createElement('input');
+            input.type = 'datetime-local';
+            input.name = 'show_times[]';
+            input.required = true;
+            container.appendChild(input);
+        }
+    </script>
 </head>
 <body>
+    <h1>Select a Movie to Assign Showtimes</h1>
 
-<h1>Add Movie</h1>
-<a href="dashboard.php">Back to Dashboard</a>
+    <div class="grid">
+        <?php foreach ($movies as $movie): ?>
+            <div class="movie-card" onclick="openModal('<?= $movie['movie_id'] ?>', '<?= htmlspecialchars($movie['title']) ?>')">
+                <img src="<?= htmlspecialchars($movie['photo']) ?>" alt="<?= htmlspecialchars($movie['title']) ?>">
+                <div class="movie-title"><?= htmlspecialchars($movie['title']) ?></div>
+            </div>
+        <?php endforeach; ?>
+    </div>
 
-<?php if ($error): ?>
-    <p class="error"><?= htmlspecialchars($error) ?></p>
-<?php elseif ($success): ?>
-    <p class="success"><?= htmlspecialchars($success) ?></p>
-<?php endif; ?>
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">X</button>
+            <h2 id="movieTitle">Assign Showtime</h2>
+            <form method="POST" action="save_showtime.php">
+                <input type="hidden" name="movie_id" id="selectedMovieId">
 
-<form method="POST" enctype="multipart/form-data">
-    <label>Title:</label>
-    <input type="text" name="title" required>
+                <label>Ticket Price:</label>
+                <input type="number" name="price" min="0" step="0.01" required>
 
-    <label>Description:</label>
-    <textarea name="description" rows="4"></textarea>
+                <label>Select Theaters:</label>
+                <div class="checkbox-group">
+                    <?php foreach ($theaters as $theater): ?>
+                        <label>
+                            <input type="checkbox" name="theaters[]" value="<?= $theater['theater_id'] ?>">
+                            <?= htmlspecialchars($theater['name']) ?>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
 
-    <label>Duration (minutes):</label>
-    <input type="number" name="duration" min="1" required>
+                <label>Show Times:</label>
+                <div id="show-times">
+                    <input type="datetime-local" name="show_times[]" required>
+                </div>
+                <button type="button" class="add-time-btn" onclick="addShowTimeField()">+ Add Show Time</button>
 
-    <label>Show Time:</label>
-    <input type="datetime-local" name="show_time" required>
-
-    <label>Location:</label>
-    <select name="location" required>
-        <option disabled selected>Select District</option>
-        <option value="Dhaka">Dhaka</option>
-        <option value="Chattogram">Chattogram</option>
-        <option value="Sylhet">Sylhet</option>
-        <!-- Add more as needed -->
-    </select>
-
-    <label>Available Tickets:</label>
-    <input type="number" name="available_tickets" min="0" required>
-
-    <label>Price:</label>
-    <input type="number" name="price" step="0.01" min="0" required>
-
-    <label>Select Theaters:</label>
-    <?php foreach ($theaters as $theater): ?>
-        <div>
-            <label>
-                <input type="checkbox" name="theaters[]" value="<?= $theater['theater_id'] ?>">
-                <?= htmlspecialchars($theater['name']) ?> (<?= htmlspecialchars($theater['location']) ?>)
-            </label>
+                <button type="submit">Save Showtimes</button>
+            </form>
         </div>
-    <?php endforeach; ?>
-
-    <label>Upload Photo:</label>
-    <input type="file" name="photo" accept="image/*" required>
-
-    <input type="submit" value="Add Movie">
-</form>
-
+    </div>
 </body>
 </html>

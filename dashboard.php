@@ -228,7 +228,7 @@ $user_photo = $_SESSION['photo'] ?? 'assets/user.jpg'; // fallback photo path
       <i class="fas fa-user"></i> Profile
     </a>
     <a href="#"><i class="fas fa-house"></i> Dashboard</a>
-    <a href="#"><i class="fas fa-film"></i> Movies</a>
+    <a href="Movies.php"><i class="fas fa-film"></i> Movies</a>
     <a href="#"><i class="fas fa-landmark"></i> Museums</a>
     <a href="#"><i class="fas fa-tree"></i> Parks</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
