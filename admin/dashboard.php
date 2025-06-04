@@ -15,84 +15,185 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Dashboard - SmartTicket</title>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | SmartTicket</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #eee; }
-        a.button { padding: 6px 12px; background: #28a745; color: white; text-decoration: none; border-radius: 4px; }
-        a.button:hover { background: #218838; }
-        h2 { margin-top: 40px; }
-        .logout { float: right; margin-top: -40px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .logout {
+            color: white;
+            text-decoration: none;
+            background-color: #dc3545;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .logout:hover {
+            background-color: #c82333;
+        }
+
+        .container {
+            padding: 30px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h2 {
+            margin-top: 50px;
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background-color: white;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e9ecef;
+            font-weight: 600;
+        }
+
+        a.button {
+            background-color: #007bff;
+            color: white;
+            padding: 7px 14px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        a.button:hover {
+            background-color: #0056b3;
+        }
+
+        .actions a {
+            margin-right: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            table, th, td {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<h1>Admin Dashboard</h1>
-<a href="logout.php" class="logout">Logout</a>
+<header>
+    <h1>SmartTicket Admin Dashboard</h1>
+    <a href="logout.php" class="logout">Logout</a>
+</header>
 
-<h2>Movies <a href="add_item.php?type=movie" class="button">Add Movie</a></h2>
-<table>
-    <tr>
-        <th>ID</th><th>Title</th><th>Duration (min)</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
-    </tr>
-    <?php foreach ($movies as $movie): ?>
-    <tr>
-        <td><?= htmlspecialchars($movie['movie_id']) ?></td>
-        <td><?= htmlspecialchars($movie['title']) ?></td>
-        <td><?= htmlspecialchars($movie['duration_minutes']) ?></td>
-        <td><?= htmlspecialchars($movie['available_tickets']) ?></td>
-        <td><?= htmlspecialchars($movie['price']) ?></td>
-        <td>
-            <a href="edit_item.php?type=movie&id=<?= $movie['movie_id'] ?>">Edit</a> |
-            <a href="delete_item.php?type=movie&id=<?= $movie['movie_id'] ?>" onclick="return confirm('Delete this movie?')">Delete</a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
+<div class="container">
 
-<h2>Museums <a href="add_item.php?type=museum" class="button">Add Museum</a></h2>
-<table>
-    <tr>
-        <th>ID</th><th>Name</th><th>Location</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
-    </tr>
-    <?php foreach ($museums as $museum): ?>
-    <tr>
-        <td><?= htmlspecialchars($museum['museum_id']) ?></td>
-        <td><?= htmlspecialchars($museum['name']) ?></td>
-        <td><?= htmlspecialchars($museum['location']) ?></td>
-        <td><?= htmlspecialchars($museum['available_tickets']) ?></td>
-        <td><?= htmlspecialchars($museum['price']) ?></td>
-        <td>
-            <a href="edit_item.php?type=museum&id=<?= $museum['museum_id'] ?>">Edit</a> |
-            <a href="delete_item.php?type=museum&id=<?= $museum['museum_id'] ?>" onclick="return confirm('Delete this museum?')">Delete</a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
+    <h2>🎬 Movies <a href="add_item.php?type=movie" class="button">Add Movie</a></h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Title</th><th>Duration (min)</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
+        </tr>
+        <?php foreach ($movies as $movie): ?>
+        <tr>
+            <td><?= htmlspecialchars($movie['movie_id']) ?></td>
+            <td><?= htmlspecialchars($movie['title']) ?></td>
+            <td><?= htmlspecialchars($movie['duration_minutes']) ?></td>
+            <td><?= htmlspecialchars($movie['available_tickets']) ?></td>
+            <td><?= htmlspecialchars($movie['price']) ?></td>
+            <td class="actions">
+                <a href="edit_item.php?type=movie&id=<?= $movie['movie_id'] ?>">Edit</a>
+                <a href="delete_item.php?type=movie&id=<?= $movie['movie_id'] ?>" onclick="return confirm('Delete this movie?')">Delete</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
 
-<h2>Parks <a href="add_item.php?type=park" class="button">Add Park</a></h2>
-<table>
-    <tr>
-        <th>ID</th><th>Name</th><th>Location</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
-    </tr>
-    <?php foreach ($parks as $park): ?>
-    <tr>
-        <td><?= htmlspecialchars($park['park_id']) ?></td>
-        <td><?= htmlspecialchars($park['name']) ?></td>
-        <td><?= htmlspecialchars($park['location']) ?></td>
-        <td><?= htmlspecialchars($park['available_tickets']) ?></td>
-        <td><?= htmlspecialchars($park['price']) ?></td>
-        <td>
-            <a href="edit_item.php?type=park&id=<?= $park['park_id'] ?>">Edit</a> |
-            <a href="delete_item.php?type=park&id=<?= $park['park_id'] ?>" onclick="return confirm('Delete this park?')">Delete</a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
+    <h2>🏛️ Museums <a href="add_item.php?type=museum" class="button">Add Museum</a></h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Name</th><th>Location</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
+        </tr>
+        <?php foreach ($museums as $museum): ?>
+        <tr>
+            <td><?= htmlspecialchars($museum['museum_id']) ?></td>
+            <td><?= htmlspecialchars($museum['name']) ?></td>
+            <td><?= htmlspecialchars($museum['location']) ?></td>
+            <td><?= htmlspecialchars($museum['available_tickets']) ?></td>
+            <td><?= htmlspecialchars($museum['price']) ?></td>
+            <td class="actions">
+                <a href="edit_item.php?type=museum&id=<?= $museum['museum_id'] ?>">Edit</a>
+                <a href="delete_item.php?type=museum&id=<?= $museum['museum_id'] ?>" onclick="return confirm('Delete this museum?')">Delete</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+
+    <h2>🌳 Parks <a href="add_item.php?type=park" class="button">Add Park</a></h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Name</th><th>Location</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
+        </tr>
+        <?php foreach ($parks as $park): ?>
+        <tr>
+            <td><?= htmlspecialchars($park['park_id']) ?></td>
+            <td><?= htmlspecialchars($park['name']) ?></td>
+            <td><?= htmlspecialchars($park['location']) ?></td>
+            <td><?= htmlspecialchars($park['available_tickets']) ?></td>
+            <td><?= htmlspecialchars($park['price']) ?></td>
+            <td class="actions">
+                <a href="edit_item.php?type=park&id=<?= $park['park_id'] ?>">Edit</a>
+                <a href="delete_item.php?type=park&id=<?= $park['park_id'] ?>" onclick="return confirm('Delete this park?')">Delete</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+
+</div>
 
 </body>
 </html>
