@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 }
 
 $type = $_GET['type'] ?? '';
-$allowed_types = ['museum', 'park'];
+$allowed_types = [ 'park'];
 
 if (!in_array($type, $allowed_types)) {
     die('Invalid type specified.');

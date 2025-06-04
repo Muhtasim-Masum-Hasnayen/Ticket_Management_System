@@ -208,7 +208,7 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
         <?php endforeach; ?>
     </table>
 
-    <h2>🏛️ Museums <a href="add_item.php?type=museum" class="button">Add Museum</a></h2>
+    <h2>🏛️ Museums <a href="add_museum.php?type=museum" class="button">Add Museum</a></h2>
     <table>
         <tr>
             <th>ID</th><th>Name</th><th>Location</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
@@ -228,7 +228,7 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
         <?php endforeach; ?>
     </table>
 
-    <h2>🌳 Parks <a href="add_item.php?type=park" class="button">Add Park</a></h2>
+    <h2>🌳 Parks <a href="add_park.php?type=park" class="button">Add Park</a></h2>
     <table>
         <tr>
             <th>ID</th><th>Name</th><th>Location</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
