@@ -208,25 +208,37 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
         <?php endforeach; ?>
     </table>
 
-    <h2>🏛️ Museums <a href="add_museum.php?type=museum" class="button">Add Museum</a></h2>
-    <table>
-        <tr>
-            <th>ID</th><th>Name</th><th>Location</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
-        </tr>
-        <?php foreach ($museums as $museum): ?>
-        <tr>
-            <td><?= htmlspecialchars($museum['museum_id']) ?></td>
-            <td><?= htmlspecialchars($museum['name']) ?></td>
-            <td><?= htmlspecialchars($museum['location']) ?></td>
-            <td><?= htmlspecialchars($museum['available_tickets']) ?></td>
-            <td><?= htmlspecialchars($museum['price']) ?></td>
-            <td class="actions">
-                <a href="edit_item.php?type=museum&id=<?= $museum['museum_id'] ?>">Edit</a>
-                <a href="delete_item.php?type=museum&id=<?= $museum['museum_id'] ?>" onclick="return confirm('Delete this museum?')">Delete</a>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
+   <h2>🏛️ Museums <a href="add_museum.php?type=museum" class="button">Add Museum</a></h2>
+   <table>
+       <tr>
+           <th>ID</th>
+           <th>Name</th>
+           <th>Location</th>
+           <th>Available Tickets</th>
+           <th>Price</th>
+           <th>Address</th>
+           <th>Opening Hours</th>
+           <th>Contact</th>
+           <th>Actions</th>
+       </tr>
+       <?php foreach ($museums as $museum): ?>
+       <tr>
+           <td><?= htmlspecialchars($museum['museum_id']) ?></td>
+           <td><?= htmlspecialchars($museum['name']) ?></td>
+           <td><?= htmlspecialchars($museum['location']) ?></td>
+           <td><?= htmlspecialchars($museum['available_tickets']) ?></td>
+           <td><?= htmlspecialchars($museum['price']) ?></td>
+           <td><?= htmlspecialchars($museum['address']) ?></td>
+           <td><?= htmlspecialchars($museum['opening_hours']) ?></td>
+           <td><?= htmlspecialchars($museum['contact']) ?></td>
+           <td class="actions">
+               <a href="edit_museums.php?id=<?= $museum['museum_id'] ?>">Edit</a>
+               <a href="delete_item.php?type=museum&id=<?= $museum['museum_id'] ?>" onclick="return confirm('Delete this museum?')">Delete</a>
+           </td>
+       </tr>
+       <?php endforeach; ?>
+   </table>
+
 
     <h2>🌳 Parks <a href="add_park.php?type=park" class="button">Add Park</a></h2>
     <table>

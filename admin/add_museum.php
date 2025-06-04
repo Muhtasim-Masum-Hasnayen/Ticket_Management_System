@@ -16,6 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $location = $_POST['location'] ?? '';
     $available_tickets = $_POST['available_tickets'] ?? 0;
     $price = $_POST['price'] ?? 0;
+    $address = $_POST['address'] ?? '';
+    $opening_hours = $_POST['opening_hours'] ?? '';
+    $contact = $_POST['contact'] ?? '';
+
 
     $uploadDir = 'uploads/museums/';
     if (!is_dir($uploadDir)) {
@@ -40,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$error) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO museums (name, description, location, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $location, $available_tickets, $price, $photoPath]);
+            $stmt = $pdo->prepare("INSERT INTO museums (name, description, location, available_tickets, price, photo, address, opening_hours, contact) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $location, $available_tickets, $price, $photoPath, $address, $opening_hours, $contact]);
             $success = "Museum added successfully!";
         } catch (Exception $e) {
             $error = "Error: " . $e->getMessage();
@@ -171,6 +175,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label>Upload Photo:</label>
         <input type="file" name="photo" accept="image/*" required>
+
+        <label>Address:</label>
+        <input type="text" name="address" required>
+
+        <label>Opening Hours:</label>
+        <input type="text" name="opening_hours" placeholder="e.g. 10:00 AM - 5:00 PM" required>
+
+        <label>Contact Info:</label>
+        <input type="text" name="contact" placeholder="Phone number or email" required>
+
 
         <input type="submit" value="Add Museum">
     </form>
