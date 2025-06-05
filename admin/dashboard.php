@@ -8,10 +8,16 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
 
-// Fetch all items
-$movies = $pdo->query("SELECT * FROM movies ORDER BY created_at DESC")->fetchAll();
-$museums = $pdo->query("SELECT * FROM museums ORDER BY created_at DESC")->fetchAll();
-$parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll();
+// Fetch all items using $conn (PDO)
+$movies  = $conn->query("SELECT * FROM movies  ORDER BY created_at DESC")
+                ->fetchAll(PDO::FETCH_ASSOC);
+
+$museums = $conn->query("SELECT * FROM museums ORDER BY created_at DESC")
+                ->fetchAll(PDO::FETCH_ASSOC);
+
+$parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
+                ->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -171,6 +177,7 @@ $parks = $pdo->query("SELECT * FROM parks ORDER BY created_at DESC")->fetchAll()
 </header>
 <div class="sidebar">
     <h2>Admin Panel</h2>
+    <a href="view_users.php">👥 View Users</a>
     <a href="add_movie.php?type=movie">➕ Add Movie</a>
     <a href="add_theater.php">🏛 Add Theater</a>
     <a href="add_movie.php?type=Add Movie_Theater">🖼 Add Museum</a>

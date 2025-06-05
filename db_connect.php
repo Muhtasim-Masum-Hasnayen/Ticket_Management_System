@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';       // or 127.0.0.1
 $db   = 'smartticket';     // your database name
-$user = 'root';            // your DB username (default is 'root' in XAMPP)
-$pass = '';                // your DB password (empty in XAMPP by default)
+$user = 'root';            // default username for XAMPP
+$pass = '';                // default password for XAMPP (empty)
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -14,8 +14,8 @@ $options = [
 ];
 
 try {
-    $pdo = new PDO($dsn, $user, $pass, $options); // 🔁 Renamed to $conn
-    // echo "Database connected successfully."; // Uncomment for testing
+    $conn = new PDO($dsn, $user, $pass, $options); // ✅ using $conn instead of $pdo
+    // echo "Database connected successfully."; // optional for testing
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
