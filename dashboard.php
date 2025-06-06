@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+require_once 'db_connect.php';
+
 // Redirect to login if not logged in
 if (!isset($_SESSION['name'])) {
     header("Location: login.php");
@@ -9,9 +11,15 @@ if (!isset($_SESSION['name'])) {
 
 // Assume you also have user ID and photo stored in session
 $user_id = $_SESSION['id'] ?? 1; // fallback id if missing
-$user_name = $_SESSION['name'];
-$user_phone = $_SESSION['phone'] ?? 'N/A'; // fallback phone
-$user_photo = $_SESSION['photo'] ?? 'assets/user.jpg'; // fallback photo path
+
+$stmt = $conn->prepare("SELECT name, phone, photo FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+$user_name = $user['name'];
+$user_phone = !empty($user['phone']) ? $user['phone'] : 'N/A';
+$user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
 ?>
 
 <!DOCTYPE html>

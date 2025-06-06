@@ -266,7 +266,7 @@ $data = $result->fetch();
     <?php if (!empty($data['photo'])): ?>
         <div class="profile-card">
             <div class="profile-image">
-                <img src="uploads/<?= htmlspecialchars($data['photo']) ?>" alt="Profile Photo">
+                <img src="<?= htmlspecialchars($data['photo']) ?>" alt="Profile Photo">
             </div>
             <h3><?= htmlspecialchars($data['name']) ?></h3>
             <p>📞 <?= htmlspecialchars($data['phone']) ?></p>
