@@ -73,7 +73,7 @@ $parks = $stmt->fetchAll();
       ?>
         <div class="col-md-6 col-lg-4 d-flex justify-content-center">
           <div class="park-card">
-            <img src="admin/uploads/parks/<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($park['name']) ?>">
+            <img src="admin/<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($park['name']) ?>">
             <h4 class="mt-2"><?= htmlspecialchars($park['name']) ?></h4>
             <p class="text-muted-light"><?= htmlspecialchars($park['location']) ?></p>
             <small><?= nl2br(htmlspecialchars($park['description'])) ?></small>

@@ -187,8 +187,8 @@ $users = $usersStmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="user-card">
                     <?php
                         // Graceful fallback if photo is missing
-                        $photoPath = !empty($user['photo']) && file_exists('../uploads/' . $user['photo'])
-                            ? '../uploads/' . htmlspecialchars($user['photo'])
+                        $photoPath = !empty($user['photo']) && file_exists('../' . $user['photo'])
+                            ? '../' . htmlspecialchars($user['photo'])
                             : '../assets/default-avatar.png'; // or wherever your fallback avatar is stored
 
                     ?>

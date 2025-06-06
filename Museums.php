@@ -225,7 +225,8 @@ include 'db_connect.php'; // Make sure this file connects to your database
 
         <!-- Museum Card -->
         <div class="museum-card" data-name="<?= $name ?>" data-location="<?= $location ?>" data-type="<?= $type ?>" data-open="<?= $open ?>" data-price="<?= $price ?>">
-          <img src="<?= $image ?>" alt="<?= $name ?>" />
+      <img src="<?= 'admin/' . $image ?>" alt="<?= htmlspecialchars($name) ?>" />
+
           <div class="museum-card-content">
             <h3><?= $name ?></h3>
             <div class="rating">★★★★☆</div>
