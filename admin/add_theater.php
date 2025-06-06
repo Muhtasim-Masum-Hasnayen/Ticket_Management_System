@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$error) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO theaters (name, location, capacity, created_at, address, contact_number, photo) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO theaters (name, location, capacity, created_at, address, contact_number, photo) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$name, $location, $capacity, $created_at, $address, $contact, $photoPath]);
             $success = "Theater added successfully!";
         } catch (Exception $e) {

@@ -16,7 +16,7 @@ $error = '';
 $success = '';
 
 // Fetch museum data
-$stmt = $pdo->prepare("SELECT * FROM museums WHERE museum_id = ?");
+$stmt = $conn->prepare("SELECT * FROM museums WHERE museum_id = ?");
 $stmt->execute([$id]);
 $museum = $stmt->fetch();
 
@@ -35,13 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contact = $_POST['contact'] ?? '';
 
     try {
-        $stmt = $pdo->prepare("UPDATE museums SET name=?, description=?, location=?, available_tickets=?, price=?, address=?, opening_hours=?, contact=? WHERE museum_id=?");
+        $stmt = $conn->prepare("UPDATE museums SET name=?, description=?, location=?, available_tickets=?, price=?, address=?, opening_hours=?, contact=? WHERE museum_id=?");
         $stmt->execute([$name, $description, $location, $available_tickets, $price, $address, $opening_hours, $contact, $id]);
 
         $success = "Museum updated successfully!";
 
         // Refresh data
-        $stmt = $pdo->prepare("SELECT * FROM museums WHERE museum_id = ?");
+        $stmt = $conn->prepare("SELECT * FROM museums WHERE museum_id = ?");
         $stmt->execute([$id]);
         $museum = $stmt->fetch();
     } catch (Exception $e) {

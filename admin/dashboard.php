@@ -195,7 +195,7 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
 
 <div class="container">
 
-    <h2>🎬 Movies <a href="add_movie.php?type=movie" class="button">Add Movie</a></h2>
+    <h2>🎬 Movies <a href="add_movie_theater.php?type=movie" class="button">Add Movie</a></h2>
     <table>
         <tr>
             <th>ID</th><th>Title</th><th>Duration (min)</th><th>Available Tickets</th><th>Price</th><th>Actions</th>

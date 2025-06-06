@@ -28,7 +28,7 @@ switch ($type) {
 }
 
 // Fetch item
-$stmt = $pdo->prepare("SELECT * FROM $table WHERE $id_col = ?");
+$stmt = $conn->prepare("SELECT * FROM $table WHERE $id_col = ?");
 $stmt->execute([$id]);
 $item = $stmt->fetch();
 
@@ -46,19 +46,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         if ($type === 'movie') {
-            $stmt = $pdo->prepare("UPDATE movies SET title=?, description=?, duration_minutes=?, available_tickets=?, price=? WHERE movie_id=?");
+            $stmt = $conn->prepare("UPDATE movies SET title=?, description=?, duration_minutes=?, available_tickets=?, price=? WHERE movie_id=?");
             $stmt->execute([$title, $description, $duration, $available_tickets, $price, $id]);
         } elseif ($type === 'museum') {
-            $stmt = $pdo->prepare("UPDATE museums SET name=?, description=?, location=?, available_tickets=?, price=? WHERE museum_id=?");
+            $stmt = $conn->prepare("UPDATE museums SET name=?, description=?, location=?, available_tickets=?, price=? WHERE museum_id=?");
             $stmt->execute([$title, $description, $location, $available_tickets, $price, $id]);
         } else { // park
-            $stmt = $pdo->prepare("UPDATE parks SET name=?, description=?, location=?, available_tickets=?, price=? WHERE park_id=?");
+            $stmt = $conn->prepare("UPDATE parks SET name=?, description=?, location=?, available_tickets=?, price=? WHERE park_id=?");
             $stmt->execute([$title, $description, $location, $available_tickets, $price, $id]);
         }
 
         $success = ucfirst($type) . " updated successfully!";
         // Refresh item data
-        $stmt = $pdo->prepare("SELECT * FROM $table WHERE $id_col = ?");
+        $stmt = $conn->prepare("SELECT * FROM $table WHERE $id_col = ?");
         $stmt->execute([$id]);
         $item = $stmt->fetch();
 

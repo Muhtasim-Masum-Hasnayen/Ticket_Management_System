@@ -52,11 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
          if ($type === 'museum') {
-            $stmt = $pdo->prepare("INSERT INTO museums (name, description, location, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO museums (name, description, location, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $location, $available_tickets, $price, $photoPath]);
 
         } else { // park
-            $stmt = $pdo->prepare("INSERT INTO parks (name, description, location, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO parks (name, description, location, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $location, $available_tickets, $price, $photoPath]);
         }
 

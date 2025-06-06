@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
 
-// ✅ Use $conn instead of $pdo
+// ✅ Use $conn instead of $conn
 $usersStmt = $conn->query(
     "SELECT id, name, phone, photo, created_at
      FROM users

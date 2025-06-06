@@ -8,7 +8,7 @@ $sql = "SELECT DISTINCT m.movie_id, m.title, m.genre, m.language, m.photo, m.des
         FROM movies m
         JOIN movie_showtimes s ON m.movie_id = s.movie_id
         ORDER BY m.title ASC";
-$stmt = $pdo->query($sql);
+$stmt = $conn->query($sql);
 $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>

@@ -24,7 +24,7 @@ switch ($type) {
     case 'park': $table = 'parks'; $id_col = 'park_id'; break;
 }
 
-$stmt = $pdo->prepare("DELETE FROM $table WHERE $id_col = ?");
+$stmt = $conn->prepare("DELETE FROM $table WHERE $id_col = ?");
 $stmt->execute([$id]);
 
 header('Location: dashboard.php');

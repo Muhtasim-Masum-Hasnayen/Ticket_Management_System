@@ -14,7 +14,7 @@ $options = [
 ];
 
 try {
-    $conn = new PDO($dsn, $user, $pass, $options); // ✅ using $conn instead of $pdo
+    $conn = new PDO($dsn, $user, $pass, $options); // ✅ using $conn instead of $conn
     // echo "Database connected successfully."; // optional for testing
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());

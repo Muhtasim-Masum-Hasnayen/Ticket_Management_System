@@ -9,7 +9,7 @@ include 'db_connect.php';
 $user_id = $_SESSION['user_id'];
 
 // Use prepared statement
-$stmt = $pdo->prepare("SELECT * FROM tickets WHERE user_id = ? ORDER BY show_date DESC");
+$stmt = $conn->prepare("SELECT * FROM tickets WHERE user_id = ? ORDER BY show_date DESC");
 $stmt->bind_param("i", $user_id); // "i" for integer
 $stmt->execute();
 $result = $stmt->get_result();

@@ -6,7 +6,7 @@ $showtimeId = $_POST['showtime_id'];
 
 // Book seats
 foreach ($seatIds as $seatId) {
-    $stmt = $pdo->prepare("UPDATE seats SET status = 'booked' WHERE seat_id = ? AND showtime_id = ?");
+    $stmt = $conn->prepare("UPDATE seats SET status = 'booked' WHERE seat_id = ? AND showtime_id = ?");
     $stmt->execute([$seatId, $showtimeId]);
 }
 

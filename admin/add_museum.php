@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$error) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO museums (name, description, location, available_tickets, price, photo, address, opening_hours, contact) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO museums (name, description, location, available_tickets, price, photo, address, opening_hours, contact) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$title, $description, $location, $available_tickets, $price, $photoPath, $address, $opening_hours, $contact]);
             $success = "Museum added successfully!";
         } catch (Exception $e) {

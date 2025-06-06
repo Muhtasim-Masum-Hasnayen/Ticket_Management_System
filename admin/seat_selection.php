@@ -7,7 +7,7 @@ if (!$showtimeId) {
     die("Showtime ID not specified.");
 }
 
-$stmt = $pdo->prepare("SELECT seat_id, seat_number, status FROM seats WHERE showtime_id = ?");
+$stmt = $conn->prepare("SELECT seat_id, seat_number, status FROM seats WHERE showtime_id = ?");
 $stmt->execute([$showtimeId]);
 $seats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>

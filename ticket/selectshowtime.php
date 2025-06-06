@@ -14,12 +14,12 @@ $sql = "SELECT t.theater_id, t.name, t.address, t.location, t.photo,
         JOIN movie_showtimes s ON t.theater_id = s.theater_id
         WHERE s.movie_id = ?
         GROUP BY t.theater_id";
-$stmt = $pdo->prepare($sql);
+$stmt = $conn->prepare($sql);
 $stmt->execute([$movie_id]);
 $theaters = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get movie title
-$stmt = $pdo->prepare("SELECT title FROM movies WHERE movie_id = ?");
+$stmt = $conn->prepare("SELECT title FROM movies WHERE movie_id = ?");
 $stmt->execute([$movie_id]);
 $movie = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -133,7 +133,7 @@ $movie = $stmt->fetch(PDO::FETCH_ASSOC);
             <p class="card-text"><strong>Location:</strong> <?= htmlspecialchars($theater['location']) ?></p>
             <p class="card-text"><strong>Available Showtimes:</strong> <?= $theater['show_count'] ?></p>
           </div>
-          <a href="#"
+          <a href="fetch_showtimes.php"
              class="btn btn-gradient mt-3 w-100 view-showtimes-btn"
              data-movie-id="<?= $movie_id ?>"
              data-theater-id="<?= $theater['theater_id'] ?>"
@@ -161,44 +161,113 @@ $movie = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
   </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const showtimeButtons = document.querySelectorAll('.view-showtimes-btn');
+  const showtimeModal = document.getElementById('showtimeModal');
 
-  showtimeButtons.forEach(btn => {
-    btn.addEventListener('click', function () {
-      const movieId = this.dataset.movieId;
-      const theaterId = this.dataset.theaterId;
-      const showtimeContainer = document.getElementById('showtime-container');
-      const seatContainer = document.getElementById('seat-container');
+  // This runs when the modal is about to be shown
+  showtimeModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; // Button that triggered the modal
+    const movieId = button.getAttribute('data-movie-id');
+    const theaterId = button.getAttribute('data-theater-id');
+    const showtimeContainer = document.getElementById('showtime-container');
 
-      seatContainer.innerHTML = ''; // Clear previous seat data
+    // Clear previous content
+    showtimeContainer.innerHTML = 'Loading showtimes...';
+    document.getElementById('seat-container').innerHTML = '';
 
-      // Load showtimes
-      fetch(`fetch_showtimes.php?movie_id=${movieId}&theater_id=${theaterId}`)
-        .then(res => res.text())
-        .then(data => {
-          showtimeContainer.innerHTML = data;
-        });
-    });
+    // Load showtimes
+    fetch(`fetch_showtimes.php?movie_id=${movieId}&theater_id=${theaterId}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.text();
+      })
+      .then(data => {
+        showtimeContainer.innerHTML = data;
+      })
+      .catch(error => {
+        console.error('Error loading showtimes:', error);
+        showtimeContainer.innerHTML = 'Error loading showtimes. Please try again.';
+      });
   });
 
-  // Event delegation for selecting a showtime button
-  document.getElementById('showtime-container').addEventListener('click', function (e) {
-    if (e.target.classList.contains('select-showtime-btn')) {
+  // Event delegation for showtime selection (works for dynamically loaded content)
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('select-showtime-btn')) {
+      e.preventDefault();
       const showtimeId = e.target.dataset.showtimeId;
       const seatContainer = document.getElementById('seat-container');
 
-      // Load available seats
+      seatContainer.innerHTML = 'Loading seats...';
+
       fetch(`fetch_seats.php?showtime_id=${showtimeId}`)
-        .then(res => res.text())
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return res.text();
+        })
         .then(data => {
           seatContainer.innerHTML = data;
+        })
+        .catch(error => {
+          console.error('Error loading seats:', error);
+          seatContainer.innerHTML = 'Error loading seats. Please try again.';
         });
     }
   });
 });
 </script>
+<script>
+let selectedSeats = [];
+let seatPrice = 0;
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('seat-select-btn')) {
+    const seat = e.target.dataset.seat;
+    const index = selectedSeats.indexOf(seat);
+
+    if (index > -1) {
+      selectedSeats.splice(index, 1);
+      e.target.classList.remove('btn-warning');
+      e.target.classList.add('btn-success');
+    } else {
+      selectedSeats.push(seat);
+      e.target.classList.remove('btn-success');
+      e.target.classList.add('btn-warning');
+    }
+
+    document.getElementById('proceed-btn').disabled = selectedSeats.length === 0;
+  }
+
+  if (e.target.id === 'proceed-btn') {
+    const showtimeId = document.querySelector('.select-showtime-btn.active')?.dataset.showtimeId;
+
+    fetch(`booking_summary.php?showtime_id=${showtimeId}`)
+      .then(res => res.json())
+      .then(info => {
+        seatPrice = info.price;
+
+        const total = seatPrice * selectedSeats.length;
+        const query = new URLSearchParams({
+          movie: info.movie,
+          theater: info.theater,
+          show_time: info.show_time,
+          showtime_id: showtimeId,
+          seats: selectedSeats.join(','),
+          total: total
+        }).toString();
+
+        window.location.href = `booking_summary.php?${query}`;
+      });
+  }
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
