@@ -17,8 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
     $location = $_POST['location'] ?? '';
-    $available_tickets = $_POST['available_tickets'] ?? 0;
-    $price = $_POST['price'] ?? 0;
+
+    $general_description = $_POST['general_description'] ?? '';
+    $general_price = $_POST['general_price'] ?? 0;
+    $general_available_ticket = $_POST['general_available_ticket'] ?? 0;
+
+    $family_description = $_POST['family_description'] ?? '';
+    $family_price = $_POST['family_price'] ?? 0;
+    $family_available_ticket = $_POST['family_available_ticket'] ?? 0;
+
+    $student_description = $_POST['student_description'] ?? '';
+    $student_price = $_POST['student_price'] ?? 0;
+    $student_available_ticket = $_POST['student_available_ticket'] ?? 0;
+
+    $corporate_description = $_POST['corporate_description'] ?? '';
+    $corporate_price = $_POST['corporate_price'] ?? 0;
+    $corporate_available_ticket = $_POST['corporate_available_ticket'] ?? 0;
 
     $uploadDir = 'uploads/parks/';
     if (!is_dir($uploadDir)) {
@@ -41,16 +55,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (!$error) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO parks (name, description, location, available_tickets, price, photo) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$title, $description, $location, $available_tickets, $price, $photoPath]);
-            $success = "🎉 Park added successfully!";
-        } catch (Exception $e) {
-            $error = "❌ Error: " . $e->getMessage();
-        }
-    }
+   if (!$error) {
+       try {
+           $stmt = $conn->prepare("INSERT INTO parks
+               (name, description, location, photo,
+                general_description, general_price, general_available_ticket,
+                family_description, family_price, family_available_ticket,
+                student_description, student_price, student_available_ticket,
+                corporate_description, corporate_price, corporate_available_ticket)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+           $stmt->execute([
+               $title, $description, $location, $photoPath,
+               $general_description, $general_price, $general_available_ticket,
+               $family_description, $family_price, $family_available_ticket,
+               $student_description, $student_price, $student_available_ticket,
+               $corporate_description, $corporate_price, $corporate_available_ticket
+           ]);
+
+           $success = "🎉 Park added successfully!";
+       } catch (Exception $e) {
+           $error = "❌ Error: " . $e->getMessage();
+       }
+   }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -150,17 +179,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endforeach; ?>
         </select>
 
-        <label>Available Tickets:</label>
-        <input type="number" name="available_tickets" min="0" required>
-
-        <label>Price (BDT):</label>
-        <input type="number" step="0.01" name="price" min="0" required>
-
         <label>Upload Photo:</label>
         <input type="file" name="photo" accept="image/*" required>
 
+        <hr><h3 style="color: white;">🎫 General Package</h3>
+        <label>Description:</label>
+        <textarea name="general_description" rows="2"></textarea>
+        <label>Price (BDT):</label>
+        <input type="number" step="0.01" name="general_price" min="0">
+        <label>Available Tickets:</label>
+        <input type="number" name="general_available_ticket" min="0">
+
+        <hr><h3 style="color: white;">👨‍👩‍👧‍👦 Family Package (4 members)</h3>
+        <label>Description:</label>
+        <textarea name="family_description" rows="2"></textarea>
+        <label>Price (BDT):</label>
+        <input type="number" step="0.01" name="family_price" min="0">
+        <label>Available Tickets:</label>
+        <input type="number" name="family_available_ticket" min="0">
+
+        <hr><h3 style="color: white;">🎓 Student Package (10 students)</h3>
+        <label>Description:</label>
+        <textarea name="student_description" rows="2"></textarea>
+        <label>Price (BDT):</label>
+        <input type="number" step="0.01" name="student_price" min="0">
+        <label>Available Tickets:</label>
+        <input type="number" name="student_available_ticket" min="0">
+
+        <hr><h3 style="color: white;">🏢 Corporate Package (10 persons)</h3>
+        <label>Description:</label>
+        <textarea name="corporate_description" rows="2"></textarea>
+        <label>Price (BDT):</label>
+        <input type="number" step="0.01" name="corporate_price" min="0">
+        <label>Available Tickets:</label>
+        <input type="number" name="corporate_available_ticket" min="0">
+
         <input type="submit" value="Add Park">
     </form>
+
 </div>
 </body>
 </html>
