@@ -57,15 +57,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file);
     }
 
-    if (!empty($photo)) {
-        $sql = "UPDATE users SET name=?, phone=?, photo=? WHERE id=?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssi", $name, $phone, $photo, $user_id);
-    } else {
-        $sql = "UPDATE users SET name=?, phone=? WHERE id=?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssi", $name, $phone, $user_id);
-    }
+   if (!empty($photo)) {
+       $sql = "UPDATE users SET name=?, phone=?, photo=? WHERE id=?";
+       $stmt = $conn->prepare($sql);
+       $stmt->execute([$name, $phone, $photo, $user_id]);
+   } else {
+       $sql = "UPDATE users SET name=?, phone=? WHERE id=?";
+       $stmt = $conn->prepare($sql);
+       $stmt->execute([$name, $phone, $user_id]);
+   }
+
 
     if ($stmt->execute()) {
         $success = "<p class='success'>Profile saved successfully!</p>";
@@ -266,7 +267,8 @@ $data = $result->fetch();
     <?php if (!empty($data['photo'])): ?>
         <div class="profile-card">
             <div class="profile-image">
-                <img src="<?= htmlspecialchars($data['photo']) ?>" alt="Profile Photo">
+              <img src="uploads/<?= htmlspecialchars($data['photo']) ?>" alt="Profile Photo">
+
             </div>
             <h3><?= htmlspecialchars($data['name']) ?></h3>
             <p>📞 <?= htmlspecialchars($data['phone']) ?></p>
