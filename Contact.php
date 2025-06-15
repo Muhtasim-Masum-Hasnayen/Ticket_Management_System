@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       color: #333;
     }
     .contact-container {
-      background-color: #fff;
+      background: linear-gradient(to right, #ffecd2, #fcb69f); min-height: 90vh;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       padding: 40px;
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <div class="contact-container">
-    <h2 class="text-center mb-4">Contact <span class="text-warning">SmartTicket</span></h2>
+    <h2 class="text-center mb-4">Contact <span class="text-warning"></span></h2>
 
     <div class="row">
       <!-- Contact Form -->

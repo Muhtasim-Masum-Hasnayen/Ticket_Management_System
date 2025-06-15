@@ -233,7 +233,7 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
       /* LIGHT MODE - your requested lighter theme */
       body.light-mode {
         display: flex;
-        background: linear-gradient(135deg, #f0f4f8, #e6f0ff);
+        background: linear-gradient(to right, #ff6b6b, #6c5ce7);
         color: #333;
         min-height: 100vh;
         transition: background 0.4s ease, color 0.4s ease;
@@ -241,7 +241,7 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
 
       body.light-mode .sidebar {
         width: 240px;
-        background: linear-gradient(160deg, #ffffff, #e3ebf5);
+        background: linear-gradient(to right, #ffecd2, #fcb69f);
         padding: 20px;
         display: flex;
         flex-direction: column;
@@ -301,8 +301,8 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
       }
 
       body.light-mode header .profile img {
-        width: 40px;
-        height: 40px;
+        width: 70px;
+        height: 70px;
         border-radius: 50%;
         border: 2px solid #007acc;
         box-shadow: 0 0 8px #007acc88;
@@ -366,7 +366,7 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
         font-size: 20px;
         border-bottom: 2px solid #007acc;
         padding-bottom: 5px;
-        color: #004080;
+        color: #ffffff;
       }
 
       body.light-mode .explore-grid,
@@ -412,7 +412,7 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
         margin-top: 50px;
         text-align: center;
         font-size: 13px;
-        color: #666;
+        color: #ffffff;
       }
 
       /* Toggle Button Style */
@@ -428,8 +428,8 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
       }
 
       body.light-mode #mode-toggle {
-        border-color: #007acc;
-        color: #007acc;
+        border-color: #ffffff;
+        color: #ffffff;
       }
 
       #mode-toggle:hover {
@@ -441,10 +441,11 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
         background: #007acc;
         color: #fff;
       }
+
   </style>
 </head>
 
-<body class="dark-mode">
+<body class="light-mode">
   <div class="sidebar">
     <h1>🎟 SmartTicket</h1>
     <a href="u_profile.php" >
@@ -460,7 +461,7 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
   <div class="main-content">
     <header>
       <h2>👋 Welcome, <span style="color:#ffd369"><?php echo htmlspecialchars($user_name); ?></span></h2>
-            <button id="mode-toggle" aria-label="Toggle Dark/Light Mode">Light Mode</button>
+            <button id="mode-toggle" aria-label="Toggle Dark/Light Mode">Dark Mode</button>
 
       <div class="profile">
         <img src="<?php echo htmlspecialchars($user_photo); ?>" alt="User Profile Photo" />
@@ -602,3 +603,6 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
     </script>
 </body>
 </html>
+
+
+

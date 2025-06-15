@@ -20,7 +20,7 @@ include 'db_connect.php'; // Make sure this file connects to your database
     }
 
     body {
-      background: linear-gradient(to right, #a18cd1, #fbc2eb);
+      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
       padding: 20px;
     }
 
@@ -59,7 +59,8 @@ include 'db_connect.php'; // Make sure this file connects to your database
     }
 
     .museum-card {
-      background: rgba(44, 62, 80, 0.8);
+      background: #6c5ce7;
+
       border-radius: 15px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -142,7 +143,7 @@ include 'db_connect.php'; // Make sure this file connects to your database
     }
 
     .popup-content {
-      background: #1c1e26;
+      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
       padding: 30px;
       border-radius: 12px;
       width: 90%;
