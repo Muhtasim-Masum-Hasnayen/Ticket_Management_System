@@ -126,8 +126,11 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-gradient shadow-sm py-3" style="background: linear-gradient(90deg, #1f1c2c, #928dab);">
   <div class="container">
-    <a class="navbar-brand fw-bold fs-3 text-black" href="#">Smart<span class="text-warning">Ticket</span></a>
 
+    <a class="navbar-brand fw-bold fs-3 text-black d-flex align-items-center gap-2" href="#">
+      <img src="SmartTicketLogo.png" alt="Logo" style="height: 55px;">
+      Smart<span class="text-warning">Ticket</span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>

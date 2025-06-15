@@ -43,7 +43,6 @@ $current_text = $text[$lang];
 
 $success = '';
 $error = '';
-
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
@@ -52,28 +51,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($_FILES["photo"]["name"])) {
         $target_dir = "uploads/";
-        $photo = basename($_FILES["photo"]["name"]);
-        $target_file = $target_dir . $photo;
+        $filename = basename($_FILES["photo"]["name"]);
+        $photo = $target_dir . $filename; // Store full path
+        $target_file = $photo;
         move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file);
     }
 
-   if (!empty($photo)) {
-       $sql = "UPDATE users SET name=?, phone=?, photo=? WHERE id=?";
-       $stmt = $conn->prepare($sql);
-       $stmt->execute([$name, $phone, $photo, $user_id]);
-   } else {
-       $sql = "UPDATE users SET name=?, phone=? WHERE id=?";
-       $stmt = $conn->prepare($sql);
-       $stmt->execute([$name, $phone, $user_id]);
-   }
+    if (!empty($photo)) {
+        $sql = "UPDATE users SET name=?, phone=?, photo=? WHERE id=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$name, $phone, $photo, $user_id]);
+    } else {
+        $sql = "UPDATE users SET name=?, phone=? WHERE id=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$name, $phone, $user_id]);
+    }
 
-
-    if ($stmt->execute()) {
+    if ($stmt) {
         $success = "<p class='success'>Profile saved successfully!</p>";
     } else {
-        $error = "<p class='error'>Error: " . $stmt->error . "</p>";
+        $error = "<p class='error'>Error: Could not update profile.</p>";
     }
 }
+
 
 // Fetch user data
 $result = $conn->query("SELECT * FROM users WHERE id = $user_id");
@@ -267,7 +267,7 @@ $data = $result->fetch();
     <?php if (!empty($data['photo'])): ?>
         <div class="profile-card">
             <div class="profile-image">
-              <img src="uploads/<?= htmlspecialchars($data['photo']) ?>" alt="Profile Photo">
+              <img src="<?= htmlspecialchars($data['photo']) ?>" alt="Profile Photo">
 
             </div>
             <h3><?= htmlspecialchars($data['name']) ?></h3>

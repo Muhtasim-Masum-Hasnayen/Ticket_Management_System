@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #667eea, #764ba2);
+            background: linear-gradient(135deg, #ffffff, #ffcce5);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #fff;
         }
         .container {
-            background: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(135deg, #ff4c60, #4ecdc4);
             border-radius: 16px;
             padding: 30px 40px;
             width: 100%;
@@ -84,6 +84,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
         }
+        .form-row {
+          display: flex;
+          gap: 20px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+        }
+
+        .form-group {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
         h1 {
             text-align: center;
             margin-bottom: 20px;
@@ -106,17 +119,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 6px;
             border: none;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.2);
+            background: #ffffff;
             color: #fff;
         }
         input[type="file"] {
-            background: transparent;
+            background: #ffffff;
         }
+        select[name="location"] {
+            color: #ffffff;
+          }
+
+          select[name="location"] option {
+            color: black;
+          }
         textarea {
             resize: vertical;
         }
         input[type="submit"] {
-            background-color: #00c9a7;
+            background-color: #218838;
             margin-top: 20px;
             cursor: pointer;
             transition: background-color 0.3s;
@@ -167,23 +187,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ?>
         </select>
 
-        <label>Available Tickets:</label>
-        <input type="number" name="available_tickets" min="0" required>
+        <!-- Row: Available Tickets + Price -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Available Tickets:</label>
+                <input type="number" name="available_tickets" min="0" required>
+              </div>
+              <div class="form-group">
+                <label>Price (৳):</label>
+                <input type="number" step="0.01" name="price" min="0" required>
+              </div>
+            </div>
 
-        <label>Price (৳):</label>
-        <input type="number" step="0.01" name="price" min="0" required>
+            <!-- Row: Upload Photo + Address -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Upload Photo:</label>
+                <input type="file" name="photo" accept="image/*" required>
+              </div>
+              <div class="form-group">
+                <label>Address:</label>
+                <input type="text" name="address" required>
+              </div>
+            </div>
 
-        <label>Upload Photo:</label>
-        <input type="file" name="photo" accept="image/*" required>
-
-        <label>Address:</label>
-        <input type="text" name="address" required>
-
-        <label>Opening Hours:</label>
-        <input type="text" name="opening_hours" placeholder="e.g. 10:00 AM - 5:00 PM" required>
-
-        <label>Contact Info:</label>
-        <input type="text" name="contact" placeholder="Phone number or email" required>
+            <!-- Row: Opening Hours + Contact Info -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Opening Hours:</label>
+                <input type="text" name="opening_hours" placeholder="e.g. 10:00 AM - 5:00 PM" required>
+              </div>
+              <div class="form-group">
+                <label>Contact Info:</label>
+                <input type="text" name="contact" placeholder="Phone number or email" required>
+              </div>
+            </div>
 
 
         <input type="submit" value="Add Museum">

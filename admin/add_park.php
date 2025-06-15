@@ -94,21 +94,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            background: linear-gradient(135deg, #ffffff, #ffcce5);
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
         }
         .form-container {
-            background: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, #ff4c60, #4ecdc4);
             backdrop-filter: blur(12px);
             border-radius: 20px;
             padding: 30px 40px;
             width: 100%;
-            max-width: 500px;
+            max-width: 1500px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
+        .form-row {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 20px;
+          margin-bottom: 30px;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .full-width {
+          grid-column: 1 / -1; /* makes this input span full width of the row */
+        }
+
+        .package-group {
+          background: rgba(255 255 255 / 0.15);
+          padding: 15px;
+          border-radius: 10px;
+          color: white;
+        }
+
         h1 {
             text-align: center;
             color: #ffffff;
@@ -134,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: bold;
             transition: background 0.3s;
             margin-top: 25px;
+            cursor: pointer;
         }
         input[type="submit"]:hover {
             background: #218838;
@@ -165,56 +189,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($success): ?><div class="success"><?= htmlspecialchars($success) ?></div><?php endif; ?>
 
     <form method="POST" enctype="multipart/form-data">
-        <label>Name:</label>
-        <input type="text" name="title" required>
 
-        <label>Description:</label>
-        <textarea name="description" rows="4" placeholder="Enter details about the park..."></textarea>
+      <!-- 1st Row: Basic Info -->
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label>Name:</label>
+          <input type="text" name="title" required>
+        </div>
 
-        <label>Location:</label>
-        <select name="location" required>
+        <div class="form-group full-width">
+          <label>Description:</label>
+          <textarea name="description" rows="4" placeholder="Enter details about the park..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Location:</label>
+          <select name="location" required>
             <option value="" disabled selected>Select District</option>
             <?php foreach ($districts as $district): ?>
-                <option value="<?= $district ?>"><?= $district ?></option>
+              <option value="<?= htmlspecialchars($district) ?>"><?= htmlspecialchars($district) ?></option>
             <?php endforeach; ?>
-        </select>
+          </select>
+        </div>
 
-        <label>Upload Photo:</label>
-        <input type="file" name="photo" accept="image/*" required>
+        <div class="form-group">
+          <label>Upload Photo:</label>
+          <input type="file" name="photo" accept="image/*" required>
+        </div>
+      </div>
 
-        <hr><h3 style="color: white;">🎫 General Package</h3>
-        <label>Description:</label>
-        <textarea name="general_description" rows="2"></textarea>
-        <label>Price (BDT):</label>
-        <input type="number" step="0.01" name="general_price" min="0">
-        <label>Available Tickets:</label>
-        <input type="number" name="general_available_ticket" min="0">
+      <!-- 2nd Row: General + Family Packages -->
+      <div class="form-row">
 
-        <hr><h3 style="color: white;">👨‍👩‍👧‍👦 Family Package (4 members)</h3>
-        <label>Description:</label>
-        <textarea name="family_description" rows="2"></textarea>
-        <label>Price (BDT):</label>
-        <input type="number" step="0.01" name="family_price" min="0">
-        <label>Available Tickets:</label>
-        <input type="number" name="family_available_ticket" min="0">
+        <div class="package-group">
+          <hr>
+          <h3 style="color: white;">🎫 General Package</h3>
+          <label>Description:</label>
+          <textarea name="general_description" rows="2"></textarea>
+          <label>Price (BDT):</label>
+          <input type="number" step="0.01" name="general_price" min="0">
+          <label>Available Tickets:</label>
+          <input type="number" name="general_available_ticket" min="0">
+        </div>
 
-        <hr><h3 style="color: white;">🎓 Student Package (10 students)</h3>
-        <label>Description:</label>
-        <textarea name="student_description" rows="2"></textarea>
-        <label>Price (BDT):</label>
-        <input type="number" step="0.01" name="student_price" min="0">
-        <label>Available Tickets:</label>
-        <input type="number" name="student_available_ticket" min="0">
+        <div class="package-group">
+          <hr>
+          <h3 style="color: white;">👨‍👩‍👧‍👦 Family Package (4 members)</h3>
+          <label>Description:</label>
+          <textarea name="family_description" rows="2"></textarea>
+          <label>Price (BDT):</label>
+          <input type="number" step="0.01" name="family_price" min="0">
+          <label>Available Tickets:</label>
+          <input type="number" name="family_available_ticket" min="0">
+        </div>
+        <div class="package-group">
+                  <hr>
+                  <h3 style="color: white;">🎓 Student Package (10 students)</h3>
+                  <label>Description:</label>
+                  <textarea name="student_description" rows="2"></textarea>
+                  <label>Price (BDT):</label>
+                  <input type="number" step="0.01" name="student_price" min="0">
+                  <label>Available Tickets:</label>
+                  <input type="number" name="student_available_ticket" min="0">
+                </div>
 
-        <hr><h3 style="color: white;">🏢 Corporate Package (10 persons)</h3>
-        <label>Description:</label>
-        <textarea name="corporate_description" rows="2"></textarea>
-        <label>Price (BDT):</label>
-        <input type="number" step="0.01" name="corporate_price" min="0">
-        <label>Available Tickets:</label>
-        <input type="number" name="corporate_available_ticket" min="0">
+                <div class="package-group">
+                  <hr>
+                  <h3 style="color: white;">🏢 Corporate Package (10 persons)</h3>
+                  <label>Description:</label>
+                  <textarea name="corporate_description" rows="2"></textarea>
+                  <label>Price (BDT):</label>
+                  <input type="number" step="0.01" name="corporate_price" min="0">
+                  <label>Available Tickets:</label>
+                  <input type="number" name="corporate_available_ticket" min="0">
+                </div>
+      </div>
 
-        <input type="submit" value="Add Park">
+
+
+      <input type="submit" value="Add Park" style="margin-top: 25px;">
     </form>
 
 </div>

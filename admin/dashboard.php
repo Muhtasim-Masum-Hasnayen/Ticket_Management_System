@@ -29,18 +29,27 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #ffffff, #ffcce5); /* Soft gradient */
             color: #212529;
+            min-height: 100vh;
         }
 
+        /* Optional: make header slightly darker to stand out from gradient */
         header {
-            background-color: #343a40;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 99%;
+            background: linear-gradient(135deg, #ff4c60, #4ecdc4); /* Colorful gradient */
             color: white;
-            padding: 15px 30px;
+            padding: 15px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
         }
+
 
         header h1 {
             margin: 0;
@@ -61,8 +70,9 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
         }
 
         .container {
-            padding: 30px;
-            max-width: 1100px;
+            background: linear-gradient(135deg, #ffffff, #ffcce5);
+            padding-top: 30px;
+            max-width: 1500px;
             margin: auto;
         }
 
@@ -73,6 +83,7 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
         }
 
         table {
+            background: #ffffff;
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 40px;
@@ -80,14 +91,21 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
         }
 
-        th, td {
+        th {
+                    border: 1px solid #dee2e6;
+                    padding: 10px 12px;
+                    text-align: left;
+                    color: #ffffff;
+                }
+         td {
             border: 1px solid #dee2e6;
             padding: 10px 12px;
             text-align: left;
+            color: #000000;
         }
 
         th {
-            background-color: #e9ecef;
+            background: #000000;
             font-weight: 600;
         }
 
@@ -107,7 +125,7 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
 
         .actions a {
             margin-right: 10px;
-            color: #007bff;
+            color: #0000000;
             text-decoration: none;
         }
 
@@ -134,7 +152,7 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
 
                 .sidebar {
                     width: 220px;
-                    background-color: #333;
+                    background: linear-gradient(135deg, #ff4c60, #4ecdc4);
                     color: white;
                     height: 100vh;
                     padding-top: 20px;
@@ -144,7 +162,9 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
                 .sidebar h2 {
                     text-align: center;
                     margin-bottom: 20px;
+                    color: white;
                 }
+
 
                 .sidebar a {
                     display: block;
@@ -159,6 +179,7 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
 
                 .main-content {
                     margin-left: 220px;
+                    margin-top: 50px;
                     padding: 20px;
                     flex-grow: 1;
                 }
@@ -173,17 +194,18 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
 
 <header>
     <h1>SmartTicket Admin Dashboard</h1>
-    <a href="logout.php" class="logout">Logout</a>
+    <a href="admin_login.php" class="logout">Logout</a>
 </header>
 <div class="sidebar">
     <h2>Admin Panel</h2>
     <a href="view_users.php">👥 View Users</a>
+    <a href="a_contact.php">📄 Contact Message</a>
     <a href="add_movie.php?type=movie">➕ Add Movie</a>
     <a href="add_theater.php">🏛 Add Theater</a>
-    <a href="add_movie.php?type=Add Movie_Theater">🖼 Add Museum</a>
-    <a href="add.php?type=park">🌳 Add Park</a>
+    <a href="add_museum.php?type=Add Movie_Theater">🖼 Add Museum</a>
+    <a href="add_park.php?type=park">🌳 Add Park</a>
     <a href="view_bookings.php">📄 View Bookings</a>
-    <a href="logout.php">🚪 Logout</a>
+    <a href="admin_login.php">🚪 Logout</a>
 </div>
 
 <div class="main-content">

@@ -27,7 +27,7 @@ $users = $usersStmt->fetchAll(PDO::FETCH_ASSOC);
         :root {
             --primary: #007bff;
             --primary-dark: #0056b3;
-            --danger: #dc3545;
+            --danger: linear-gradient(135deg, #ff4c60, #4ecdc4);
             --gray-100: #f8f9fa;
             --gray-200: #e9ecef;
             --gray-600: #6c757d;
@@ -35,65 +35,158 @@ $users = $usersStmt->fetchAll(PDO::FETCH_ASSOC);
         }
         * { box-sizing: border-box; }
         body {
-            margin: 0;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--gray-100);
-            color: #212529;
-            display: flex;
-            min-height: 100vh;
-        }
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    margin: 0;
+                    background: linear-gradient(135deg, #ffffff, #ffcce5); /* Soft gradient */
+                    color: #212529;
+                    min-height: 100vh;
+                }
 
-        /* ---------- Header ---------- */
-        header {
-            position: fixed;
-            top: 0;
-            left: 220px;                    /*  = sidebar width  */
-            right: 0;
-            height: 60px;
-            background-color: #343a40;
-            color: #fff;
-            padding: 0 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 100;
-        }
-        header h1 { font-size: 22px; margin: 0; }
-        header .logout {
-            background: var(--danger);
-            color: #fff;
-            padding: 8px 14px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        header .logout:hover { background: #c82333; }
+                /* Optional: make header slightly darker to stand out from gradient */
+                header {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    background: linear-gradient(135deg, #ff4c60, #4ecdc4); /* Colorful gradient */
+                    color: white;
+                    padding: 15px 10px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    z-index: 1000;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
+                }
 
-        /* ---------- Sidebar ---------- */
-        .sidebar {
-            position: fixed;
-            left: 0; top: 0;
-            width: 220px;
-            height: 100%;
-            background: var(--sidebar-bg);
-            color: #fff;
-            padding: 20px 0;
-            overflow-y: auto;
-        }
-        .sidebar h2 {
-            font-size: 20px;
-            margin: 0 0 25px;
-            text-align: center;
-        }
-        .sidebar a {
-            display: block;
-            padding: 12px 20px;
-            color: #fff;
-            text-decoration: none;
-            font-size: 15px;
-        }
-        .sidebar a:hover,
-        .sidebar a.active { background: #575757; }
+
+                header h1 {
+                    margin: 0;
+                    font-size: 24px;
+                }
+
+                .logout {
+                    color: white;
+                    text-decoration: none;
+                    background-color: #dc3545;
+                    padding: 8px 14px;
+                    border-radius: 4px;
+                    font-size: 14px;
+                }
+
+                .logout:hover {
+                    background-color: #c82333;
+                }
+
+                .container {
+
+                    padding-top: 30px;
+                    max-width: 1100px;
+                    margin: auto;
+                }
+
+                h2 {
+                    margin-top: 50px;
+                    margin-bottom: 10px;
+                    color: #343a40;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 40px;
+                    background-color: white;
+                    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+                }
+
+                th, td {
+                    border: 1px solid #dee2e6;
+                    padding: 10px 12px;
+                    text-align: left;
+                }
+
+                th {
+                    background-color: #e9ecef;
+                    font-weight: 600;
+                }
+
+                a.button {
+                    background-color: #007bff;
+                    color: white;
+                    padding: 7px 14px;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    margin-left: 10px;
+                }
+
+                a.button:hover {
+                    background-color: #0056b3;
+                }
+
+                .actions a {
+                    margin-right: 10px;
+                    color: #007bff;
+                    text-decoration: none;
+                }
+
+                .actions a:hover {
+                    text-decoration: underline;
+                }
+
+                @media (max-width: 768px) {
+                    header h1 {
+                        font-size: 20px;
+                    }
+
+                    .container {
+                        padding: 20px;
+                    }
+
+                    table, th, td {
+                        font-size: 14px;
+                    }
+                }
+
+
+
+
+                        .sidebar {
+                            width: 220px;
+                            background: linear-gradient(135deg, #ff4c60, #4ecdc4);
+                            color: white;
+                            height: 100vh;
+                            padding-top: 20px;
+                            position: fixed;
+                        }
+
+                        .sidebar h2 {
+                            text-align: center;
+                            margin-bottom: 20px;
+                            color: white;
+                        }
+
+
+                        .sidebar a {
+                            display: block;
+                            color: white;
+                            padding: 12px 20px;
+                            text-decoration: none;
+                        }
+
+                        .sidebar a:hover {
+                            background-color: #575757;
+                        }
+
+                        .main-content {
+                            margin-left: 220px;
+                            margin-top: 50px;
+                            padding: 20px;
+                            flex-grow: 1;
+                        }
+
+                        h1 {
+                            margin-top: 0;
+                        }
 
         /* ---------- Main ---------- */
         main {
@@ -112,7 +205,7 @@ $users = $usersStmt->fetchAll(PDO::FETCH_ASSOC);
         }
         .user-card {
             flex: 0 0 calc(33.333% - 25px);
-            background: #fff;
+            background: linear-gradient(135deg, #e6e6fa, #d0f0fd);
             border-radius: 14px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             padding: 20px;

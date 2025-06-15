@@ -34,23 +34,78 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <title>Admin Login - SmartTicket</title>
     <style>
-        body { font-family: Arial; background: #f2f2f2; }
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #ffffff, #ffcce5);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .login-box {
-            max-width: 400px; margin: 80px auto; background: white;
-            padding: 30px; border-radius: 8px; box-shadow: 0 0 10px #ccc;
+            max-width: 400px;
+            width: 100%;
+            background: linear-gradient(135deg, #ff4c60, #4ecdc4);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            color: white;
         }
-        input[type="text"], input[type="password"] {
-            width: 100%; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #ccc;
+        .login-title {
+          text-align: center;
+          color: white; /* Optional: adjust color for better visibility */
+          margin-bottom: 20px;
         }
+
+        .login-box img {
+          max-width: 100px;
+          margin: 0 auto 10px;
+          display: block;
+        }
+
+
+        input[type="text"],
+        input[type="password"] {
+            width: 97%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+        }
+
         input[type="submit"] {
-            background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer;
+            background: #222;
+            color: white;
+            border: none;
+            padding: 12px 190px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.3s ease;
         }
-        .error { color: red; }
+
+        input[type="submit"]:hover {
+            background: #000;
+        }
+
+        .error {
+            color: #ffe0e0;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
     </style>
+
 </head>
 <body>
 <div class="login-box">
-    <h2>Admin Login</h2>
+   <img src="SmartTicketLogo.png" alt="Smart Ticket Logo">
+       <h2 class="login-title">Smart Ticket Admin Login</h2>
     <?php if ($error): ?>
         <p class="error"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
