@@ -1,270 +1,334 @@
 <?php
-include 'db_connect.php'; // Make sure this file connects to your database
+include 'db_connect.php';
+
+// Build dynamic filter conditions
+$conditions = [];
+$params = [];
+
+if (!empty($_GET['name'])) {
+  $conditions[] = "name LIKE :name";
+  $params[':name'] = '%' . $_GET['name'] . '%';
+}
+
+if (!empty($_GET['location'])) {
+  $conditions[] = "location = :location";
+  $params[':location'] = $_GET['location'];
+}
+
+if (!empty($_GET['type'])) {
+  $conditions[] = "description LIKE :type";
+  $params[':type'] = '%' . $_GET['type'] . '%';
+}
+
+if (!empty($_GET['open'])) {
+  if ($_GET['open'] === 'yes') {
+    $conditions[] = "opening_hours LIKE '%Open%'";
+  } elseif ($_GET['open'] === 'no') {
+    $conditions[] = "opening_hours NOT LIKE '%Open%'";
+  }
+}
+
+if (!empty($_GET['price_range'])) {
+  switch ($_GET['price_range']) {
+    case 'low':
+      $conditions[] = "price <= 100";
+      break;
+    case 'mid':
+      $conditions[] = "price BETWEEN 101 AND 300";
+      break;
+    case 'high':
+      $conditions[] = "price > 300";
+      break;
+  }
+}
+
+$sql = "SELECT * FROM museums";
+if (!empty($conditions)) {
+  $sql .= " WHERE " . implode(" AND ", $conditions);
+}
+$stmt = $conn->prepare($sql);
+$stmt->execute($params);
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$popupIndex = 1;
+
+$districts = [
+  "Bagerhat", "Bandarban", "Barguna", "Barisal", "Bhola", "Bogra", "Brahmanbaria",
+  "Chandpur", "Chapai Nawabganj", "Chattogram", "Chuadanga", "Comilla", "Cox's Bazar",
+  "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj",
+  "Habiganj", "Jamalpur", "Jashore", "Jhalokathi", "Jhenaidah", "Joypurhat", "Khagrachari",
+  "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur",
+  "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon",
+  "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali",
+  "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati",
+  "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet",
+  "Tangail", "Thakurgaon"
+];
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Museums | SmartTicket</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
-      padding: 20px;
-    }
-
-    h1.title {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      color: #fff;
-    }
-
-    .filter-section {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .filter-section input,
-    .filter-section select {
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      width: 200px;
-    }
-
-    .museum-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      margin: 40px 0;
-      padding: 0 20px;
-    }
-
-    .museum-card {
-      background: #6c5ce7;
-
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .museum-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .museum-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-
-    .museum-card-content {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-
-    .museum-card-content h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
-      color: #ffd369;
-    }
-
-    .museum-card-content p {
-      flex-grow: 1;
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    .rating {
-      font-size: 16px;
-      margin: 10px 0;
-      color: gold;
-    }
-
-    .view-btn {
-      padding: 8px 14px;
-      background-color: #ffd369;
-      color: #1c1e26;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      align-self: flex-start;
-    }
-
-    @media (max-width: 1024px) {
-      .museum-grid {
-        grid-template-columns: repeat(2, 1fr);
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
       }
-    }
 
-    @media (max-width: 768px) {
-      .museum-grid {
-        grid-template-columns: 1fr;
+      body {
+        background: linear-gradient(to right, #ff6b6b, #6c5ce7);
+        padding: 20px;
       }
-    }
 
-    /* Popup styling */
-    .popup {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-    }
+      h1.title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #fff;
+      }
 
-    .popup-content {
-      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 600px;
-      color: #fff;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-      position: relative;
-    }
+      .filter-section {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
 
-    .popup-content .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #ffd369;
-    }
+      .filter-section input,
+      .filter-section select {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        width: 200px;
+      }
 
-    iframe {
-      margin-top: 15px;
-      border-radius: 8px;
-    }
-  </style>
+      .museum-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin: 40px 0;
+        padding: 0 20px;
+      }
+
+      .museum-card {
+        background: #6c5ce7;
+
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .museum-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .museum-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .museum-card-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+
+      .museum-card-content h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #ffd369;
+      }
+
+      .museum-card-content p {
+        flex-grow: 1;
+        font-size: 14px;
+        color: #ccc;
+      }
+
+      .rating {
+        font-size: 16px;
+        margin: 10px 0;
+        color: gold;
+      }
+
+      .view-btn {
+        padding: 8px 14px;
+        background-color: #ffd369;
+        color: #1c1e26;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        align-self: flex-start;
+      }
+
+      @media (max-width: 1024px) {
+        .museum-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .museum-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Popup styling */
+      .popup {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .popup-content {
+        background: linear-gradient(to right, #ff6b6b, #6c5ce7);
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        color: #fff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        position: relative;
+      }
+
+      .popup-content .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #ffd369;
+      }
+
+      iframe {
+        margin-top: 15px;
+        border-radius: 8px;
+      }
+    </style>
 </head>
 
 <body>
-
   <h1 class="title">Explore Museums</h1>
 
-    <div class="filter-section">
-      <input type="text" placeholder="Search Museum Name" />
-      <select>
-        <option value="">Select Location</option>
-        <option value="Dhaka">Dhaka</option>
-        <option value="Chattogram">Chattogram</option>
-        <option value="Khulna">Khulna</option>
-      </select>
-      <select>
-        <option value="">Type</option>
-        <option value="Art">Art</option>
-        <option value="History">History</option>
-        <option value="Science">Science</option>
-        <option value="Culture">Culture</option>
-        <option value="Natural">Natural History</option>
-      </select>
-      <select>
-        <option value="">Open Now?</option>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-      </select>
-      <select>
-        <option value="">Ticket Price</option>
-        <option value="low">৳0–100</option>
-        <option value="mid">৳101–300</option>
-        <option value="high">৳301+</option>
-      </select>
-    </div>
+  <form method="GET" class="filter-section">
+    <input type="text" name="name" placeholder="Search Museum Name" value="<?= htmlspecialchars($_GET['name'] ?? '') ?>" />
 
-    <div class="museum-grid">
-     <?php
-     $sql = "SELECT * FROM museums";
-     $stmt = $conn->prepare($sql);
-     $stmt->execute();
-     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-     $popupIndex = 1;
+    <select name="location">
+      <option value="">Select District</option>
+      <?php foreach ($districts as $district): ?>
+        <option value="<?= $district ?>" <?= (($_GET['location'] ?? '') === $district) ? 'selected' : '' ?>>
+          <?= $district ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
 
-     foreach ($result as $row) {
-       $id = $row['museum_id'];
-       $name = htmlspecialchars($row['name']);
-       $location = htmlspecialchars($row['location']);
-       $price = htmlspecialchars($row['price']);
-       $image = htmlspecialchars($row['photo']);
-       $description = htmlspecialchars($row['description']);
-       $address = htmlspecialchars($row['address']);
-       $hours = htmlspecialchars($row['opening_hours']);
-       $ticket_price = htmlspecialchars($row['price']);
-       $contact = htmlspecialchars($row['contact']);
-     ?>
-
-
-        <!-- Museum Card -->
-        <div class="museum-card" data-name="<?= $name ?>" data-location="<?= $location ?>" data-type="<?= $type ?>" data-open="<?= $open ?>" data-price="<?= $price ?>">
-      <img src="<?= 'admin/' . $image ?>" alt="<?= htmlspecialchars($name) ?>" />
-
-          <div class="museum-card-content">
-            <h3><?= $name ?></h3>
-            <div class="rating">★★★★☆</div>
-            <button class="view-btn" onclick="openPopup('popup<?= $popupIndex ?>')">View Details</button>
-          </div>
-        </div>
-
-        <!-- Popup -->
-        <div class="popup" id="popup<?= $popupIndex ?>" style="display: none;">
-          <div class="popup-content">
-            <span class="close-btn" onclick="closePopup('popup<?= $popupIndex ?>')">&times;</span>
-            <h2><?= $name ?></h2>
-            <p><strong>Description:</strong> <?= $description ?></p>
-            <p><strong>Address:</strong> <?= $address ?></p>
-            <p><strong>Opening Hours:</strong> <?= $hours ?></p>
-            <p><strong>Ticket Price:</strong> <?= $ticket_price ?></p>
-            <p><strong>Contact:</strong> <?= $contact ?></p>
-            <iframe src="<?= $map_url ?>" width="100%" height="200" frameborder="0" allowfullscreen></iframe>
-          </div>
-        </div>
-
+    <select name="type">
+      <option value="">Type</option>
       <?php
-        $popupIndex++;
-      }
+        $types = ["Art", "History", "Science", "Culture", "Natural"];
+        foreach ($types as $type) {
+          $selected = ($_GET['type'] ?? '') === $type ? 'selected' : '';
+          echo "<option value=\"$type\" $selected>$type</option>";
+        }
       ?>
-    </div>
+    </select>
 
-    <script>
-      function openPopup(id) {
-        document.getElementById(id).style.display = "flex";
-      }
+    <select name="open">
+      <option value="">Open Now?</option>
+      <option value="yes" <?= ($_GET['open'] ?? '') === 'yes' ? 'selected' : '' ?>>Yes</option>
+      <option value="no" <?= ($_GET['open'] ?? '') === 'no' ? 'selected' : '' ?>>No</option>
+    </select>
 
-      function closePopup(id) {
-        document.getElementById(id).style.display = "none";
-      }
-    </script>
+    <select name="price_range">
+      <option value="">Ticket Price</option>
+      <option value="low" <?= ($_GET['price_range'] ?? '') === 'low' ? 'selected' : '' ?>>৳0–100</option>
+      <option value="mid" <?= ($_GET['price_range'] ?? '') === 'mid' ? 'selected' : '' ?>>৳101–300</option>
+      <option value="high" <?= ($_GET['price_range'] ?? '') === 'high' ? 'selected' : '' ?>>৳301+</option>
+    </select>
+
+    <button type="submit" class="view-btn">Filter</button>
+  </form>
+
+  <div class="museum-grid">
+    <?php foreach ($result as $row): ?>
+      <?php
+        $id = $row['museum_id'];
+        $name = htmlspecialchars($row['name']);
+        $location = htmlspecialchars($row['location']);
+        $price = htmlspecialchars($row['price']);
+        $image = htmlspecialchars($row['photo']);
+        $description = htmlspecialchars($row['description']);
+        $address = htmlspecialchars($row['address']);
+        $hours = htmlspecialchars($row['opening_hours']);
+        $ticket_price = htmlspecialchars($row['price']);
+        $contact = htmlspecialchars($row['contact']);
+        $map_url = "https://www.google.com/maps?q=" . urlencode($address);
+      ?>
+      <div class="museum-card">
+        <img src="<?= 'admin/' . $image ?>" alt="<?= $name ?>" />
+        <div class="museum-card-content">
+          <h3><?= $name ?></h3>
+          <div class="rating">★★★★☆</div>
+          <button class="view-btn" onclick="openPopup('popup<?= $popupIndex ?>')">View Details</button>
+        </div>
+      </div>
+
+      <div class="popup" id="popup<?= $popupIndex ?>" style="display: none;">
+       <div class="popup-content">
+         <span class="close-btn" onclick="closePopup('popup<?= $popupIndex ?>')">&times;</span>
+         <h2><?= $name ?></h2>
+         <p><strong>Description:</strong> <?= $description ?></p>
+         <p><strong>Address:</strong> <?= $address ?></p>
+         <p><strong>Opening Hours:</strong> <?= $hours ?></p>
+         <p><strong>Ticket Price:</strong> <?= $ticket_price ?></p>
+         <p><strong>Contact:</strong> <?= $contact ?></p>
+
+         <div style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+           <button style="padding: 12px 24px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); color: #1c1e26; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); backdrop-filter: blur(6px); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;" onclick="alert('Booking functionality coming soon!')">
+             <i class="fas fa-calendar-check"></i> Book Now
+           </button>
+           <button style="padding: 12px 24px; background: linear-gradient(135deg, #84fab0, #8fd3f4); color: #1c1e26; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); backdrop-filter: blur(6px); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;" onclick="alert('Redirecting to ticket purchase...')">
+             <i class="fas fa-ticket-alt"></i> Buy Ticket
+           </button>
+         </div>
+       </div>
+
+      </div>
+      <?php $popupIndex++; ?>
+    <?php endforeach; ?>
+  </div>
+
+  <script>
+    function openPopup(id) {
+      document.getElementById(id).style.display = "flex";
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = "none";
+    }
+  </script>
 </body>
-
-
 </html>
