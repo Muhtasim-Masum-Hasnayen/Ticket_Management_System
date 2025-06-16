@@ -114,8 +114,8 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
       }
 
       body.dark-mode header .profile img {
-        width: 40px;
-        height: 40px;
+        width: 70px;
+        height: 70px;
         border-radius: 50%;
         border: 2px solid #ffd369;
         box-shadow: 0 0 10px #ffd36980;
