@@ -1,9 +1,16 @@
+<?php
+include 'db_connect.php';
+
+// Fetch all parks
+$stmt = $conn->query("SELECT * FROM parks ORDER BY name");
+$parks = $stmt->fetchAll();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Parks - SmartTicket</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -13,29 +20,27 @@
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
     }
-
     .park-card {
-      width: 400px;
-      height: 420px;
-      background: rgba(255, 255, 255, 0.05);
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255,255,255,0.05);
       border-radius: 15px;
       padding: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       transition: transform 0.3s ease;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      margin-bottom: 30px;
     }
-
     .park-card:hover {
       transform: scale(1.02);
     }
-
     .package-card {
-      background-color: #111111;
+      background-color: #111;
       border-radius: 12px;
-      padding: 20px;
-      margin: 15px 0;
+      padding: 15px;
+      margin-bottom: 10px;
     }
     .park-card img {
       width: 100%;
@@ -43,231 +48,111 @@
       object-fit: cover;
       border-radius: 10px;
     }
-
-
     .btn-gradient {
       background: linear-gradient(to right, #ff512f, #dd2476);
       border: none;
       color: white;
     }
-
     .btn-gradient:hover {
       background: linear-gradient(to right, #dd2476, #ff512f);
     }
-
     .text-muted-light {
       color: #ddd;
     }
+    .filter-section {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    .filter-section input, .filter-section select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      width: 220px;
+    }
   </style>
 </head>
-
 <body>
-  <div class="container py-5">
+  <div class="container py-4">
     <h1 class="text-center mb-4">Explore Parks & Ticket Packages</h1>
 
-    <!-- Featured Parks -->
-    <div class="row">
-      <!-- Example Park Card -->
-      <div class="col-md-6 col-lg-4">
-        <div class="park-card">
-          <img src="Fantasy.jpg" class="img-fluid rounded mb-3" alt="Fantasy Kingdom">
-          <h4>Fantasy Kingdom</h4>
-          <p class="text-muted-light">Ashulia, Savar</p>
-          <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#fantasyPackages">View Packages</button>
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <input type="text" id="searchInput" onkeyup="filterParks()" placeholder="Search by park name">
+      <select id="locationFilter" onchange="filterParks()">
+        <option value="">All Districts</option>
+        <?php
+        $districts = ["Bagerhat", "Bandarban", "Barguna", "Barisal", "Bhola", "Bogra", "Brahmanbaria", "Chandpur", "Chapai Nawabganj", "Chattogram", "Chuadanga", "Comilla", "Cox's Bazar", "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", "Jhalokathi", "Jhenaidah", "Joypurhat", "Khagrachari", "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"];
+        foreach ($districts as $d) {
+          echo "<option value='$d'>$d</option>";
+        }
+        ?>
+      </select>
+    </div>
 
-          <div class="collapse mt-3" id="fantasyPackages">
-            <div class="package-card">
-              <h5>🎓 Student Package</h5>
-              <p>৳400 per person. ID required. Includes 5 rides.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>💑 Couple Package</h5>
-              <p>৳800 for 2 persons. Free photo booth & drink.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>👨‍👩‍👧‍👦 Family Package</h5>
-              <p>৳1800 for 5 members. Includes lunch & ride pass.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>🏢 Corporate Package</h5>
-              <p>৳5000 for 10 members. Free lounge & event support.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
+    <div class="row justify-content-center" id="parkContainer">
+      <?php foreach ($parks as $index => $park):
+        $id = $park['park_id'];
+        $name = htmlspecialchars($park['name']);
+        $img = !empty($park['photo']) ? $park['photo'] : 'no-image.png';
+        $collapseId = "collapse" . $index;
+      ?>
+        <div class="col-md-6 col-lg-4 park-box" data-name="<?= strtolower($name) ?>" data-location="<?= strtolower($park['location']) ?>">
+          <div class="park-card">
+            <img src="admin/<?= htmlspecialchars($img) ?>" alt="<?= $name ?>">
+            <h4 class="mt-2"><?= $name ?></h4>
+            <p class="text-muted-light"><?= htmlspecialchars($park['location']) ?></p>
+            <small><?= nl2br(htmlspecialchars($park['description'])) ?></small>
+
+            <button class="btn btn-gradient w-100 mt-3"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#<?= $collapseId ?>"
+                    aria-expanded="false"
+                    aria-controls="<?= $collapseId ?>">
+              View Packages
+            </button>
+
+            <div class="collapse mt-3" id="<?= $collapseId ?>">
+              <?php
+                $sections = [
+                  'General'   => 'general',
+                  'Family (4 people)'    => 'family',
+                  'Student (10 people)'   => 'student',
+                  'Corporate (10 people)' => 'corporate'
+                ];
+                foreach ($sections as $title => $col):
+                  $desc = $park["{$col}_description"];
+                  $price = $park["{$col}_price"];
+                  $tickets = $park["{$col}_available_ticket"];
+                  if ($desc || $price || $tickets !== null):
+              ?>
+                <div class="package-card">
+                  <h5><?= $title ?></h5>
+                  <?php if ($desc): ?>
+                    <p><?= nl2br(htmlspecialchars($desc)) ?></p>
+                  <?php endif; ?>
+                  <?php if ($price !== null): ?>
+                    <p><strong>Price:</strong> ৳<?= number_format($price, 2) ?></p>
+                  <?php endif; ?>
+                  <?php if ($tickets !== null): ?>
+                    <p><strong>Available Tickets:</strong> <?= $tickets ?></p>
+                  <?php endif; ?>
+                  <a href="book.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
+                     class="btn btn-outline-light btn-sm">Book Now</a>
+                  <a href="buy.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
+                     class="btn btn-outline-light btn-sm">Buy Ticket</a>
+                </div>
+              <?php endif; endforeach; ?>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Add more park cards here -->
-      <div class="col-md-6 col-lg-4">
-        <div class="park-card">
-          <img src="Nandan.jpg" class="img-fluid rounded mb-3" alt="Nandan Park">
-          <h4>Nandan Park</h4>
-          <p class="text-muted-light">Nabinagar, Dhaka</p>
-          <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#nandanPackages">View Packages</button>
-
-          <div class="collapse mt-3" id="nandanPackages">
-            <div class="package-card">
-              <h5>🎓 Student Package</h5>
-              <p>৳350 per person. Includes entry & 3 rides.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>💑 Couple Package</h5>
-              <p>৳750 for 2. Romantic ride + lunch combo.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>👨‍👩‍👧‍👦 Family Package</h5>
-              <p>৳1600 family ticket. Includes water zone.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>🏢 Corporate Package</h5>
-              <p>৳4500 for 8. Meeting space & buffet included.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Water Kingdom -->
-      <div class="col-md-6 col-lg-4">
-        <div class="park-card">
-          <img src="WaterKingdom.jpg" class="img-fluid rounded mb-3" alt="Water Kingdom">
-          <h4>Water Kingdom</h4>
-          <p class="text-muted-light">Narayanganj</p>
-          <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#waterPackages">View Packages</button>
-
-          <div class="collapse mt-3" id="waterPackages">
-            <div class="package-card">
-              <h5>🎓 Student Package</h5>
-              <p>৳350 per person. ID required. Includes water slides & wave pool.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>💑 Couple Package</h5>
-              <p>৳750 for 2 persons. Romantic tube ride & snack voucher.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>👨‍👩‍👧‍👦 Family Package</h5>
-              <p>৳1600 for 5 members. All-day pass + kid zone access.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>🏢 Corporate Package</h5>
-              <p>৳4800 for 10 people. Reserved cabana & team activities.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mana Bay Water Park -->
-      <div class="col-md-6 col-lg-4">
-        <div class="park-card">
-          <img src="Mana Bay.jpg" class="img-fluid rounded mb-3" alt="Mana Bay Water Park">
-          <h4>Mana Bay Water Park</h4>
-          <p class="text-muted-light">Ghatail, Tangail</p>
-          <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#manaPackages">View Packages</button>
-
-          <div class="collapse mt-3" id="manaPackages">
-            <div class="package-card">
-              <h5>🎓 Student Package</h5>
-              <p>৳450 per student. Free locker, includes slides & rain dance.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>💑 Couple Package</h5>
-              <p>৳900 for 2. Couple cabana + ice cream voucher.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>👨‍👩‍👧‍👦 Family Package</h5>
-              <p>৳2000 for 5. Kids slide area & water shows included.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>🏢 Corporate Package</h5>
-              <p>৳5200 for 10. Water volleyball + event decoration.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Suborno Gram -->
-      <div class="col-md-6 col-lg-4">
-        <div class="park-card">
-          <img src="SubornoGram.jpg" class="img-fluid rounded mb-3" alt="Suborno Gram">
-          <h4>Suborno Gram</h4>
-          <p class="text-muted-lig+ht">Kuril, Dhaka</p>
-          <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#subornoPackages">View Packages</button>
-
-          <div class="collapse mt-3" id="subornoPackages">
-            <div class="package-card">
-              <h5>🎓 Student Package</h5>
-              <p>৳300 per student. Museum tour & cultural show access.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>💑 Couple Package</h5>
-              <p>৳700 for 2. Boating, garden walk & couple photo shoot.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>👨‍👩‍👧‍👦 Family Package</h5>
-              <p>৳1500 for 5. Picnic spot, play zone & snacks included.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>🏢 Corporate Package</h5>
-              <p>৳4500 for 10. Open stage, seminar hall, and catering.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Narsingdi Dream Holiday Park -->
-      <div class="col-md-6 col-lg-4">
-        <div class="park-card">
-          <img src="Dream Holiday Park.jpg" class="img-fluid rounded mb-3" alt="Narsingdi Dream Holiday Park">
-          <h4>Dream Holiday Park</h4>
-          <p class="text-muted-light">Narsingdi</p>
-          <button class="btn btn-gradient w-100" data-bs-toggle="collapse" data-bs-target="#dreamPackages">View Packages</button>
-
-          <div class="collapse mt-3" id="dreamPackages">
-            <div class="package-card">
-              <h5>🎓 Student Package</h5>
-              <p>৳380 per student. Includes adventure zone & train ride.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>💑 Couple Package</h5>
-              <p>৳850 for 2. Private garden table & tea break.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>👨‍👩‍👧‍👦 Family Package</h5>
-              <p>৳1700 for 5. Free photo session & ride bands.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-            <div class="package-card">
-              <h5>🏢 Corporate Package</h5>
-              <p>৳4900 for 10. Large picnic spot + logistic support.</p>
-              <button class="btn btn-outline-light btn-sm">Book Now</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Repeat cards for Water Kingdom, Mana Bay, Narshindi Park, Suborno Gram -->
+      <?php endforeach; ?>
     </div>
 
     <div class="text-center mt-5">
@@ -276,6 +161,19 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  <script>
+    function filterParks() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const location = document.getElementById('locationFilter').value.toLowerCase();
+      const parks = document.querySelectorAll('.park-box');
 
+      parks.forEach(park => {
+        const name = park.getAttribute('data-name');
+        const loc = park.getAttribute('data-location');
+        const match = name.includes(search) && (location === '' || loc === location);
+        park.style.display = match ? 'block' : 'none';
+      });
+    }
+  </script>
+</body>
 </html>
