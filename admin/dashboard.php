@@ -268,7 +268,6 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
        <?php endforeach; ?>
    </table>
 
-
     <h2>🌳 Parks <a href="add_park.php?type=park" class="button">Add Park</a></h2>
     <table>
         <tr>
@@ -282,7 +281,7 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
             <td><?= htmlspecialchars($park['description']) ?></td>
             <td><?= htmlspecialchars($park['photo']) ?></td>
             <td class="actions">
-                <a href="edit_item.php?type=park&id=<?= $park['park_id'] ?>">Edit</a>
+                <a href="edit_park.php?type=park&id=<?= $park['park_id'] ?>">Edit</a>
                 <a href="delete_item.php?type=park&id=<?= $park['park_id'] ?>" onclick="return confirm('Delete this park?')">Delete</a>
             </td>
         </tr>
