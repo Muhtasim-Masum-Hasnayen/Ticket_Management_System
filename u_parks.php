@@ -9,8 +9,8 @@ $parks = $stmt->fetchAll();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Parks - SmartTicket</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -31,6 +31,7 @@ $parks = $stmt->fetchAll();
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      margin-bottom: 30px;
     }
     .park-card:hover {
       transform: scale(1.02);
@@ -58,33 +59,66 @@ $parks = $stmt->fetchAll();
     .text-muted-light {
       color: #ddd;
     }
-    @media (max-width:768px) {
-      .park-card { margin-bottom: 30px; }
+    .filter-section {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    .filter-section input, .filter-section select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      width: 220px;
     }
   </style>
 </head>
 <body>
   <div class="container py-4">
     <h1 class="text-center mb-4">Explore Parks & Ticket Packages</h1>
-    <div class="row justify-content-center">
-      <?php foreach ($parks as $park):
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <input type="text" id="searchInput" onkeyup="filterParks()" placeholder="Search by park name">
+      <select id="locationFilter" onchange="filterParks()">
+        <option value="">All Districts</option>
+        <?php
+        $districts = ["Bagerhat", "Bandarban", "Barguna", "Barisal", "Bhola", "Bogra", "Brahmanbaria", "Chandpur", "Chapai Nawabganj", "Chattogram", "Chuadanga", "Comilla", "Cox's Bazar", "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", "Jhalokathi", "Jhenaidah", "Joypurhat", "Khagrachari", "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"];
+        foreach ($districts as $d) {
+          echo "<option value='$d'>$d</option>";
+        }
+        ?>
+      </select>
+    </div>
+
+    <div class="row justify-content-center" id="parkContainer">
+      <?php foreach ($parks as $index => $park):
         $id = $park['park_id'];
+        $name = htmlspecialchars($park['name']);
         $img = !empty($park['photo']) ? $park['photo'] : 'no-image.png';
+        $collapseId = "collapse" . $index;
       ?>
-        <div class="col-md-6 col-lg-4 d-flex justify-content-center">
+        <div class="col-md-6 col-lg-4 park-box" data-name="<?= strtolower($name) ?>" data-location="<?= strtolower($park['location']) ?>">
           <div class="park-card">
-            <img src="admin/<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($park['name']) ?>">
-            <h4 class="mt-2"><?= htmlspecialchars($park['name']) ?></h4>
+            <img src="admin/<?= htmlspecialchars($img) ?>" alt="<?= $name ?>">
+            <h4 class="mt-2"><?= $name ?></h4>
             <p class="text-muted-light"><?= htmlspecialchars($park['location']) ?></p>
             <small><?= nl2br(htmlspecialchars($park['description'])) ?></small>
 
             <button class="btn btn-gradient w-100 mt-3"
+                    type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target="#packages<?= $id ?>">
+                    data-bs-target="#<?= $collapseId ?>"
+                    aria-expanded="false"
+                    aria-controls="<?= $collapseId ?>">
               View Packages
             </button>
 
-            <div class="collapse mt-3" id="packages<?= $id ?>">
+            <div class="collapse mt-3" id="<?= $collapseId ?>">
               <?php
                 $sections = [
                   'General'   => 'general',
@@ -99,35 +133,47 @@ $parks = $stmt->fetchAll();
                   if ($desc || $price || $tickets !== null):
               ?>
                 <div class="package-card">
-                  <h5><?= htmlspecialchars($title) ?></h5>
+                  <h5><?= $title ?></h5>
                   <?php if ($desc): ?>
                     <p><?= nl2br(htmlspecialchars($desc)) ?></p>
                   <?php endif; ?>
                   <?php if ($price !== null): ?>
-                    <p><strong>Price:</strong> ৳<?= htmlspecialchars(number_format($price, 2)) ?></p>
+                    <p><strong>Price:</strong> ৳<?= number_format($price, 2) ?></p>
                   <?php endif; ?>
                   <?php if ($tickets !== null): ?>
-                    <p><strong>Available Tickets:</strong> <?= htmlspecialchars($tickets) ?></p>
+                    <p><strong>Available Tickets:</strong> <?= $tickets ?></p>
                   <?php endif; ?>
                   <a href="book.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
                      class="btn btn-outline-light btn-sm">Book Now</a>
-                      <a href="buy.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
-                                          class="btn btn-outline-light btn-sm">Buy Now</a>
+                  <a href="buy.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
+                     class="btn btn-outline-light btn-sm">Buy Ticket</a>
                 </div>
-              <?php
-                  endif;
-                endforeach;
-              ?>
+              <?php endif; endforeach; ?>
             </div>
           </div>
         </div>
       <?php endforeach; ?>
     </div>
+
     <div class="text-center mt-5">
       <p class="text-muted-light">More parks coming soon...</p>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function filterParks() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const location = document.getElementById('locationFilter').value.toLowerCase();
+      const parks = document.querySelectorAll('.park-box');
+
+      parks.forEach(park => {
+        const name = park.getAttribute('data-name');
+        const loc = park.getAttribute('data-location');
+        const match = name.includes(search) && (location === '' || loc === location);
+        park.style.display = match ? 'block' : 'none';
+      });
+    }
+  </script>
 </body>
 </html>
