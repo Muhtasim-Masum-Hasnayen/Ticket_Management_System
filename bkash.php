@@ -1,19 +1,64 @@
 <?php
 session_start();
-if (!isset($_SESSION['lang'])) $_SESSION['lang'] = 'bn';
-if (isset($_GET['lang']) && in_array($_GET['lang'], ['bn', 'en'])) $_SESSION['lang'] = $_GET['lang'];
-$lang = $_SESSION['lang'];
-$text = [
-    'bn' => ['title' => 'বিকাশ পেমেন্ট', 'number' => 'বিকাশ নম্বর', 'trxid' => 'লেনদেন আইডি', 'amount' => 'টাকার পরিমাণ', 'submit' => 'জমা দিন'],
-    'en' => ['title' => 'bKash Payment', 'number' => 'bKash Number', 'trxid' => 'Transaction ID', 'amount' => 'Amount (BDT)', 'submit' => 'Submit']
-];
-$current = $text[$lang];
+require_once 'db_connect.php';
+
+// Check for session booking data
+if (!isset($_SESSION['pending_booking'])) {
+    echo "No booking found.";
+    exit;
+}
+
+$booking = $_SESSION['pending_booking'];
+$random_trx = rand(1000000000, 9999999999);
+$amount = $booking['total_amount'];
+$show_verification_box = false;
+$error_message = "";
+
+// Step 2: After clicking verify and submitting verification code
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['verify_step']) && $_POST['verify_step'] == '1') {
+        // Trigger show of verification field
+        $show_verification_box = true;
+    } elseif (isset($_POST['verification_code'])) {
+        if ($_POST['verification_code'] == '22') {
+            $user_id = $_SESSION['id'];
+            $payment_method = 'bKash';
+            $transaction_id = $_POST['trx_id'];
+            $showtime_id = $booking['showtime_id'];
+            $seats = $booking['selected_seats'];
+
+            $stmt = $conn->prepare("INSERT INTO bookings (user_id, showtime_id, seat_number, payment_method, transaction_id,total_amount) VALUES (?, ?, ?, ?, ?, ?)");
+            foreach ($seats as $seat) {
+                $stmt->execute([$user_id, $showtime_id, $seat, $payment_method, $transaction_id,$amount]);
+
+                // After storing booking in DB
+                $booking_id = $conn->lastInsertId();  // Assuming you're using PDO and this is the booking ID
+                header("Location: ticket/ticket.php?booking_id=" . $booking_id);
+                exit;
+
+            }
+
+            unset($_SESSION['pending_booking']);
+            echo "<div style='font-family:sans-serif; padding:20px;'>";
+            echo "<h2 style='color:green;'>✅ Booking Confirmed via bKash</h2>";
+            echo "<p><strong>Transaction ID:</strong> " . htmlspecialchars($transaction_id) . "</p>";
+            echo "<p><strong>Seats:</strong> " . implode(', ', $seats) . "</p>";
+            echo "<p><strong>Amount:</strong> ৳" . htmlspecialchars($amount) . "</p>";
+            echo "<a href='my_bookings.php'>➡ View My Bookings</a>";
+            echo "</div>";
+            exit;
+        } else {
+            $error_message = "❌ Incorrect verification code.";
+            $show_verification_box = true;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
-<html lang="<?= $lang ?>">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><?= $current['title'] ?> | SmartKirshi</title>
+    <title>bKash Payment</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -44,16 +89,11 @@ $current = $text[$lang];
             font-weight: bold;
             color: #444;
         }
-        input[type="text"], input[type="number"] {
+        input {
             width: 100%;
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
-            transition: 0.3s;
-        }
-        input[type="text"]:focus, input[type="number"]:focus {
-            border-color: #e2136e;
-            outline: none;
         }
         button {
             padding: 12px;
@@ -64,46 +104,52 @@ $current = $text[$lang];
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
         }
-        button:hover {
-            background: #c51162;
-        }
-        .back {
-            margin-top: 20px;
-        }
-        .back a {
-            text-decoration: none;
-            color: #e2136e;
+        .error {
+            color: red;
+            margin-bottom: 10px;
             font-weight: bold;
-        }
-        .logo {
-            margin-bottom: 20px;
-        }
-        .logo img {
-            height: 60px;
         }
     </style>
 </head>
 <body>
-    <div class="logo">
-        <img src="bkash.jpeg" alt="bkash Logo">
-    </div>
-    <h1><?= $current['title'] ?></h1>
-    <form method="POST" action="">
+    <h1>
+        <img src="bkash.jpeg" alt="bKash Logo" style="height: 50px; vertical-align: middle; margin-right: 10px;">
+         Payment
+    </h1>
+    <form method="POST">
+        <?php if ($error_message): ?>
+            <div class="error"><?= $error_message ?></div>
+        <?php endif; ?>
+
+
         <div class="form-group">
-            <label><?= $current['number'] ?>:</label>
-            <input type="text" name="bkash_number" required>
+            <label>bKash Number:</label>
+            <input type="text" name="bkash_number" required pattern="\d{11}" placeholder="01XXXXXXXXX"
+                   value="<?= isset($_POST['bkash_number']) ? htmlspecialchars($_POST['bkash_number']) : '' ?>">
+        </div>
+
+        <div class="form-group">
+            <label>Transaction ID:</label>
+            <input type="text" name="trx_id" value="<?= $random_trx ?>" readonly>
         </div>
         <div class="form-group">
-            <label><?= $current['trxid'] ?>:</label>
-            <input type="text" name="trx_id" required>
+            <label>Amount (BDT):</label>
+            <input type="number" name="amount" value="<?= $amount ?>" readonly>
         </div>
-        <div class="form-group">
-            <label><?= $current['amount'] ?>:</label>
-            <input type="number" name="amount" required>
-        </div>
-        <button type="submit"><?= $current['submit'] ?></button>
+
+        <?php if (!$show_verification_box): ?>
+            <!-- Show this first -->
+            <input type="hidden" name="verify_step" value="1">
+            <button type="submit">Verify Number</button>
+        <?php else: ?>
+            <!-- Show after clicking verify -->
+            <div class="form-group">
+                <label>Verification Code (Enter 22):</label>
+                <input type="text" name="verification_code" required>
+            </div>
+            <button type="submit">Submit Payment</button>
+        <?php endif; ?>
     </form>
 </body>
 </html>

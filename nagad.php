@@ -1,110 +1,140 @@
 <?php
 session_start();
-if (!isset($_SESSION['lang'])) $_SESSION['lang'] = 'bn';
-if (isset($_GET['lang']) && in_array($_GET['lang'], ['bn', 'en'])) $_SESSION['lang'] = $_GET['lang'];
-$lang = $_SESSION['lang'];
-$text = [
-    'bn' => ['title' => 'নগদ পেমেন্ট', 'number' => 'নগদ নম্বর', 'trxid' => 'লেনদেন আইডি', 'amount' => 'টাকার পরিমাণ', 'submit' => 'জমা দিন'],
-    'en' => ['title' => 'Nagad Payment', 'number' => 'Nagad Number', 'trxid' => 'Transaction ID', 'amount' => 'Amount (BDT)', 'submit' => 'Submit']
-];
-$current = $text[$lang];
+require_once 'db_connect.php';
+
+if (!isset($_SESSION['pending_booking'])) {
+    echo "No booking found.";
+    exit;
+}
+
+$booking = $_SESSION['pending_booking'];
+$random_trx = rand(1000000000, 9999999999);
+$amount = $booking['total_amount'];
+$show_verification_box = false;
+$error_message = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['verify_step']) && $_POST['verify_step'] == '1') {
+        $show_verification_box = true;
+    } elseif (isset($_POST['verification_code'])) {
+        if ($_POST['verification_code'] == '22') {
+            $user_id = $_SESSION['id'];
+            $payment_method = 'Nagad';
+            $transaction_id = $_POST['trx_id'];
+            $showtime_id = $booking['showtime_id'];
+            $seats = $booking['selected_seats'];
+
+            $stmt = $conn->prepare("INSERT INTO bookings (user_id, showtime_id, seat_number, payment_method, transaction_id, total_amount) VALUES (?, ?, ?, ?, ?, ?)");
+            foreach ($seats as $seat) {
+                $stmt->execute([$user_id, $showtime_id, $seat, $payment_method, $transaction_id, $amount]);
+                $booking_id = $conn->lastInsertId();
+                header("Location: ticket/ticket.php?booking_id=" . $booking_id);
+                exit;
+            }
+
+            unset($_SESSION['pending_booking']);
+        } else {
+            $error_message = "❌ Incorrect verification code.";
+            $show_verification_box = true;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
-<html lang="<?= $lang ?>">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><?= $current['title'] ?> | SmartKirshi</title>
+    <title>Nagad Payment</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #fff4f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 60px 20px;
-        }
-        h1 {
-            color: #f76820;
-        }
-        form {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 100%;
-            border-top: 8px solid #f76820;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #444;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            transition: 0.3s;
-        }
-        input:focus {
-            border-color: #f76820;
-            outline: none;
-        }
-        button {
-            padding: 12px;
-            width: 100%;
-            background: #f76820;
-            color: white;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #dd4c00;
-        }
-        .back {
-            margin-top: 20px;
-        }
-        .back a {
-            text-decoration: none;
-            color: #f76820;
-            font-weight: bold;
-        }
-        .logo {
-            margin-bottom: 20px;
-        }
-        .logo img {
-            height: 60px;
-        }
-    </style>
+
+                body {
+                    font-family: 'Segoe UI', sans-serif;
+                    background: #fdf2f9;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 60px 20px;
+                }
+                h1 {
+                    color: #e2136e;
+                }
+                form {
+                    background: #ffffff;
+                    padding: 30px;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+                    max-width: 400px;
+                    width: 100%;
+                    border-top: 8px solid #e2136e;
+                }
+                .form-group {
+                    margin-bottom: 20px;
+                }
+                label {
+                    display: block;
+                    margin-bottom: 8px;
+                    font-weight: bold;
+                    color: #444;
+                }
+                input {
+                    width: 100%;
+                    padding: 10px;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                }
+                button {
+                    padding: 12px;
+                    width: 100%;
+                    background: #e2136e;
+                    color: white;
+                    font-weight: bold;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                }
+                .error {
+                    color: red;
+                    margin-bottom: 10px;
+                    font-weight: bold;
+                }
+            </style>
+
 </head>
 <body>
-    <div class="logo">
-        <img src="nagad.jpeg" alt="Nagad Logo">
-    </div>
-    <h1><?= $current['title'] ?></h1>
-    <form method="POST" action="">
-        <div class="form-group">
-            <label><?= $current['number'] ?>:</label>
-            <input type="text" name="nagad_number" required>
-        </div>
-        <div class="form-group">
-            <label><?= $current['trxid'] ?>:</label>
-            <input type="text" name="trx_id" required>
-        </div>
-        <div class="form-group">
-            <label><?= $current['amount'] ?>:</label>
-            <input type="number" name="amount" required>
-        </div>
-        <button type="submit"><?= $current['submit'] ?></button>
-    </form>
+<h1>
+    <img src="nagad.jpeg" alt="Nagad Logo" style="height: 50px; vertical-align: middle; margin-right: 10px;">
+    Payment
+</h1>
+<form method="POST">
+    <?php if ($error_message): ?>
+        <div class="error"><?= $error_message ?></div>
+    <?php endif; ?>
 
+    <div class="form-group">
+        <label>Nagad Number:</label>
+        <input type="text" name="bkash_number" required pattern="\d{11}" placeholder="01XXXXXXXXX"
+               value="<?= isset($_POST['bkash_number']) ? htmlspecialchars($_POST['bkash_number']) : '' ?>">
+    </div>
+
+    <div class="form-group">
+        <label>Transaction ID:</label>
+        <input type="text" name="trx_id" value="<?= $random_trx ?>" readonly>
+    </div>
+    <div class="form-group">
+        <label>Amount (BDT):</label>
+        <input type="number" name="amount" value="<?= $amount ?>" readonly>
+    </div>
+
+    <?php if (!$show_verification_box): ?>
+        <input type="hidden" name="verify_step" value="1">
+        <button type="submit">Verify Number</button>
+    <?php else: ?>
+        <div class="form-group">
+            <label>Verification Code (Enter 22):</label>
+            <input type="text" name="verification_code" required>
+        </div>
+        <button type="submit">Submit Payment</button>
+    <?php endif; ?>
+</form>
 </body>
 </html>

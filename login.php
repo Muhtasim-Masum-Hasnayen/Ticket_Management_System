@@ -1,6 +1,14 @@
 <!-- Save this as login.php -->
 
-<?php session_start(); ?>
+<?php session_start();
+ if (isset($_SESSION['pending_booking'])) {
+     header('Location: ticket/confirm_booking.php');
+     exit;
+ }
+
+
+ ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
