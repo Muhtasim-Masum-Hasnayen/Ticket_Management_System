@@ -46,58 +46,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Rocket Payment</title>
     <style>
-               body {
-                   font-family: 'Segoe UI', sans-serif;
-                   background: #fdf2f9;
-                   display: flex;
-                   flex-direction: column;
-                   align-items: center;
-                   padding: 60px 20px;
-               }
-               h1 {
-                   color: #e2136e;
-               }
-               form {
-                   background: #ffffff;
-                   padding: 30px;
-                   border-radius: 12px;
-                   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-                   max-width: 400px;
-                   width: 100%;
-                   border-top: 8px solid #e2136e;
-               }
-               .form-group {
-                   margin-bottom: 20px;
-               }
-               label {
-                   display: block;
-                   margin-bottom: 8px;
-                   font-weight: bold;
-                   color: #444;
-               }
-               input {
-                   width: 100%;
-                   padding: 10px;
-                   border-radius: 8px;
-                   border: 1px solid #ccc;
-               }
-               button {
-                   padding: 12px;
-                   width: 100%;
-                   background: #e2136e;
-                   color: white;
-                   font-weight: bold;
-                   border: none;
-                   border-radius: 8px;
-                   cursor: pointer;
-               }
-               .error {
-                   color: red;
-                   margin-bottom: 10px;
-                   font-weight: bold;
-               }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f9f5ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+        }
 
+        h1 {
+            color: #7A1E9C; /* Rocket purple */
+            margin-bottom: 30px;
+        }
+
+        form {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(122, 30, 156, 0.1);
+            max-width: 420px;
+            width: 100%;
+            border-top: 6px solid #7A1E9C;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus {
+            border-color: #7A1E9C;
+            outline: none;
+        }
+
+        button {
+            padding: 12px;
+            width: 100%;
+            background: #7A1E9C;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: #660f87;
+        }
+
+        .error {
+            color: #7A1E9C;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
     </style>
+
 </head>
 <body>
 <h1>

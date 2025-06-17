@@ -306,10 +306,20 @@ $districts = [
          <p><strong>Ticket Price:</strong> <?= $ticket_price ?></p>
          <p><strong>Contact:</strong> <?= $contact ?></p>
 
-         <div style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
-           <button style="padding: 12px 24px; background: linear-gradient(135deg, #ff9a9e, #fad0c4); color: #1c1e26; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); backdrop-filter: blur(6px); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;" onclick="alert('Booking functionality coming soon!')">
+         <form action="museum/temp_booking.php" method="POST" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; margin-top: 20px;">
+           <input type="hidden" name="museum_id" value="<?= $id ?>">
+
+           <label for="quantity<?= $popupIndex ?>" style="color: #333; font-weight: bold;">Quantity:</label>
+           <input type="number" id="quantity<?= $popupIndex ?>" name="quantity" min="1" value="1"
+                  style="width: 80px; padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+
+           <button type="submit" style="padding: 12px 20px; background: linear-gradient(135deg, #f6d365, #fda085); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">
              <i class="fas fa-calendar-check"></i> Book Now
            </button>
+         </form>
+
+
+
            <button style="padding: 12px 24px; background: linear-gradient(135deg, #84fab0, #8fd3f4); color: #1c1e26; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); backdrop-filter: blur(6px); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;" onclick="alert('Redirecting to ticket purchase...')">
              <i class="fas fa-ticket-alt"></i> Buy Ticket
            </button>

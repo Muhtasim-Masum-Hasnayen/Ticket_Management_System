@@ -4,6 +4,11 @@ include 'db_connect.php';
 // Fetch all parks
 $stmt = $conn->query("SELECT * FROM parks ORDER BY name");
 $parks = $stmt->fetchAll();
+
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -143,9 +148,11 @@ $parks = $stmt->fetchAll();
                   <?php if ($tickets !== null): ?>
                     <p><strong>Available Tickets:</strong> <?= $tickets ?></p>
                   <?php endif; ?>
-                  <a href="book.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
+                  <a href="book_park.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
+
                      class="btn btn-outline-light btn-sm">Book Now</a>
-                  <a href="buy.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
+                  <a href="book_park.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
+
                      class="btn btn-outline-light btn-sm">Buy Ticket</a>
                 </div>
               <?php endif; endforeach; ?>
