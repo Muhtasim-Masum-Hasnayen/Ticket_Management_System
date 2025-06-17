@@ -235,7 +235,6 @@ $districts = [
 
   <form method="GET" class="filter-section">
     <input type="text" name="name" placeholder="Search Museum Name" value="<?= htmlspecialchars($_GET['name'] ?? '') ?>" />
-
     <select name="location">
       <option value="">Select District</option>
       <?php foreach ($districts as $district): ?>
@@ -297,36 +296,29 @@ $districts = [
       </div>
 
       <div class="popup" id="popup<?= $popupIndex ?>" style="display: none;">
-       <div class="popup-content">
-         <span class="close-btn" onclick="closePopup('popup<?= $popupIndex ?>')">&times;</span>
-         <h2><?= $name ?></h2>
-         <p><strong>Description:</strong> <?= $description ?></p>
-         <p><strong>Address:</strong> <?= $address ?></p>
-         <p><strong>Opening Hours:</strong> <?= $hours ?></p>
-         <p><strong>Ticket Price:</strong> <?= $ticket_price ?></p>
-         <p><strong>Contact:</strong> <?= $contact ?></p>
+        <div class="popup-content">
+          <span class="close-btn" onclick="closePopup('popup<?= $popupIndex ?>')">&times;</span>
+          <h2><?= $name ?></h2>
+          <p><strong>Description:</strong> <?= $description ?></p>
+          <p><strong>Address:</strong> <?= $address ?></p>
+          <p><strong>Opening Hours:</strong> <?= $hours ?></p>
+          <p><strong>Ticket Price:</strong> <?= $ticket_price ?></p>
+          <p><strong>Contact:</strong> <?= $contact ?></p>
 
-         <form action="museum/temp_booking.php" method="POST" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; margin-top: 20px;">
-           <input type="hidden" name="museum_id" value="<?= $id ?>">
+          <form action="museum/temp_booking.php" method="POST" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; margin-top: 20px;">
+            <input type="hidden" name="museum_id" value="<?= $id ?>">
 
-           <label for="quantity<?= $popupIndex ?>" style="color: #333; font-weight: bold;">Quantity:</label>
-           <input type="number" id="quantity<?= $popupIndex ?>" name="quantity" min="1" value="1"
-                  style="width: 80px; padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc;" required>
+            <label for="quantity<?= $popupIndex ?>" style="color: #333; font-weight: bold;">Quantity:</label>
+            <input type="number" id="quantity<?= $popupIndex ?>" name="quantity" min="1" value="1"
+                   style="width: 80px; padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc;" required>
 
-           <button type="submit" style="padding: 12px 20px; background: linear-gradient(135deg, #f6d365, #fda085); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">
-             <i class="fas fa-calendar-check"></i> Book Now
-           </button>
-         </form>
-
-
-
-           <button style="padding: 12px 24px; background: linear-gradient(135deg, #84fab0, #8fd3f4); color: #1c1e26; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); backdrop-filter: blur(6px); display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;" onclick="alert('Redirecting to ticket purchase...')">
-             <i class="fas fa-ticket-alt"></i> Buy Ticket
-           </button>
-         </div>
-       </div>
-
+            <button type="submit" style="padding: 12px 20px; background: linear-gradient(135deg, #f6d365, #fda085); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer;">
+              <i class="fas fa-calendar-check"></i> Buy Ticket
+            </button>
+          </form>
+        </div>
       </div>
+
       <?php $popupIndex++; ?>
     <?php endforeach; ?>
   </div>
@@ -341,4 +333,5 @@ $districts = [
     }
   </script>
 </body>
+
 </html>

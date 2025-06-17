@@ -150,9 +150,6 @@ $parks = $stmt->fetchAll();
                   <?php endif; ?>
                   <a href="book_park.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
 
-                     class="btn btn-outline-light btn-sm">Book Now</a>
-                  <a href="book_park.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
-
                      class="btn btn-outline-light btn-sm">Buy Ticket</a>
                 </div>
               <?php endif; endforeach; ?>
