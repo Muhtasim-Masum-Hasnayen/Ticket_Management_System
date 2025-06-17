@@ -12,48 +12,59 @@ $theaters = $conn->query("SELECT * FROM theaters")->fetchAll();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Assign Showtimes</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
-        h1 { text-align: center; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 20px;
-            padding: 20px;
+            padding: 0 20px;
         }
 
         .movie-card {
-            background: white;
-            border-radius: 8px;
+            background: #fff;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             text-align: center;
-            transition: transform 0.2s;
+            transition: transform 0.2s ease-in-out;
         }
 
         .movie-card:hover {
-            transform: scale(1.02);
+            transform: scale(1.03);
         }
 
         .movie-card img {
             width: 100%;
-            aspect-ratio: 1/1;
+            height: 220px;
             object-fit: cover;
         }
 
         .movie-title {
-            padding: 10px;
+            padding: 12px;
+            font-size: 16px;
             font-weight: bold;
-            font-size: 1rem;
-            color: #333;
+            color: #444;
         }
 
-        /* Modal */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -62,51 +73,89 @@ $theaters = $conn->query("SELECT * FROM theaters")->fetchAll();
             background: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
-            z-index: 999;
+            z-index: 1000;
         }
 
         .modal-content {
-            background: white;
-            padding: 20px;
+            background: #fff;
+            padding: 30px;
             border-radius: 10px;
             width: 90%;
             max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             position: relative;
         }
 
         .close-btn {
             position: absolute;
-            top: 10px; right: 10px;
-            background: red; color: white;
-            border: none; padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        form label, form select, form input, .checkbox-group {
-            display: block;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .checkbox-group label {
-            margin: 5px 0;
-        }
-
-        .add-time-btn, button[type="submit"] {
-            margin-top: 15px;
-            background: #007BFF;
-            color: white;
-            padding: 10px;
+            top: 12px;
+            right: 12px;
+            background: crimson;
+            color: #fff;
             border: none;
+            padding: 6px 12px;
+            font-size: 14px;
             border-radius: 6px;
             cursor: pointer;
         }
 
-        .add-time-btn:hover, button[type="submit"]:hover {
+        form label {
+            display: block;
+            margin-top: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        form input[type="number"],
+        form input[type="datetime-local"],
+        form select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .checkbox-group {
+            margin-top: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+
+        .checkbox-group label {
+            display: block;
+            margin: 5px 0;
+            font-weight: normal;
+        }
+
+        #show-times input {
+            margin-bottom: 10px;
+        }
+
+        .add-time-btn,
+        button[type="submit"] {
+            background: #007bff;
+            color: white;
+            padding: 12px 20px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .add-time-btn:hover,
+        button[type="submit"]:hover {
             background: #0056b3;
         }
     </style>
+
     <script>
         function openModal(movieId, title) {
             document.getElementById('modal').style.display = 'flex';
@@ -129,7 +178,8 @@ $theaters = $conn->query("SELECT * FROM theaters")->fetchAll();
     </script>
 </head>
 <body>
-    <h1>Select a Movie to Assign Showtimes</h1>
+
+    <h1>Assign Showtimes to Movies</h1>
 
     <div class="grid">
         <?php foreach ($movies as $movie): ?>
@@ -144,11 +194,11 @@ $theaters = $conn->query("SELECT * FROM theaters")->fetchAll();
     <div class="modal" id="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal()">X</button>
-            <h2 id="movieTitle">Assign Showtime</h2>
+            <h2 id="movieTitle">Assign Showtimes</h2>
             <form method="POST" action="save_showtime.php">
                 <input type="hidden" name="movie_id" id="selectedMovieId">
 
-                <label>Ticket Price:</label>
+                <label>Ticket Price (৳):</label>
                 <input type="number" name="price" min="0" step="0.01" required>
 
                 <label>Select Theaters:</label>
@@ -165,11 +215,12 @@ $theaters = $conn->query("SELECT * FROM theaters")->fetchAll();
                 <div id="show-times">
                     <input type="datetime-local" name="show_times[]" required>
                 </div>
-                <button type="button" class="add-time-btn" onclick="addShowTimeField()">+ Add Show Time</button>
+                <button type="button" class="add-time-btn" onclick="addShowTimeField()">+ Add More Show Time</button>
 
                 <button type="submit">Save Showtimes</button>
             </form>
         </div>
     </div>
+
 </body>
 </html>

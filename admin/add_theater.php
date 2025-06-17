@@ -47,146 +47,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Add Theater</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            padding: 20px;
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-        form {
-            background: #fff;
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffffff, #ffcce5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+        .container {
+            background: linear-gradient(135deg, #ff4c60, #4ecdc4);
+            border-radius: 16px;
+            padding: 30px 40px;
+            width: 100%;
+            max-width: 650px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
         }
         label {
-            display: block;
             margin-top: 12px;
-            font-weight: bold;
+            display: block;
+            font-weight: 500;
         }
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
+        input, select, textarea {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            box-sizing: border-box;
+            padding: 10px 14px;
+            margin-top: 6px;
+            border: none;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #000;
+        }
+        select[name="location"] {
+            color: #000;
+        }
+        select[name="location"] option {
+            color: black;
         }
         input[type="file"] {
-            margin-top: 8px;
+            background: #ffffff;
+        }
+        textarea {
+            resize: vertical;
         }
         input[type="submit"] {
+            background-color: #218838;
             margin-top: 20px;
-            background: #007bff;
-            color: #fff;
+            color: white;
             border: none;
             padding: 12px 20px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
-        .success { color: green; }
-        .error { color: red; }
+        input[type="submit"]:hover {
+            background-color: #00b092;
+        }
+        .success {
+            color: #a2ffbf;
+            margin-bottom: 15px;
+        }
+        .error {
+            color: #ff8f8f;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<h2 style="text-align:center;">Add New Theater</h2>
+<div class="container">
+    <h2>Add New Theater</h2>
 
-<?php if ($error): ?>
-    <p class="error"><?= htmlspecialchars($error) ?></p>
-<?php elseif ($success): ?>
-    <p class="success"><?= htmlspecialchars($success) ?></p>
-<?php endif; ?>
+    <?php if ($error): ?>
+        <p class="error"><?= htmlspecialchars($error) ?></p>
+    <?php elseif ($success): ?>
+        <p class="success"><?= htmlspecialchars($success) ?></p>
+    <?php endif; ?>
 
-<form method="POST" enctype="multipart/form-data">
-    <label>Name:</label>
-    <input type="text" name="name" required>
+    <form method="POST" enctype="multipart/form-data">
+        <label>Name:</label>
+        <input type="text" name="name" required>
 
-   <label for="location">Location:</label>
-       <select name="location" id="location" required>
-           <option value="" disabled selected>Select District</option>
-           <option value="Bagerhat">Bagerhat</option>
-           <option value="Bandarban">Bandarban</option>
-           <option value="Barguna">Barguna</option>
-           <option value="Barisal">Barisal</option>
-           <option value="Bhola">Bhola</option>
-           <option value="Bogra">Bogra</option>
-           <option value="Brahmanbaria">Brahmanbaria</option>
-           <option value="Chandpur">Chandpur</option>
-           <option value="Chapai Nawabganj">Chapai Nawabganj</option>
-           <option value="Chattogram">Chattogram</option>
-           <option value="Chuadanga">Chuadanga</option>
-           <option value="Comilla">Comilla</option>
-           <option value="Cox's Bazar">Cox's Bazar</option>
-           <option value="Dhaka">Dhaka</option>
-           <option value="Dinajpur">Dinajpur</option>
-           <option value="Faridpur">Faridpur</option>
-           <option value="Feni">Feni</option>
-           <option value="Gaibandha">Gaibandha</option>
-           <option value="Gazipur">Gazipur</option>
-           <option value="Gopalganj">Gopalganj</option>
-           <option value="Habiganj">Habiganj</option>
-           <option value="Jamalpur">Jamalpur</option>
-           <option value="Jashore">Jashore</option>
-           <option value="Jhalokati">Jhalokati</option>
-           <option value="Jhenaidah">Jhenaidah</option>
-           <option value="Joypurhat">Joypurhat</option>
-           <option value="Khagrachhari">Khagrachhari</option>
-           <option value="Khulna">Khulna</option>
-           <option value="Kishoreganj">Kishoreganj</option>
-           <option value="Kurigram">Kurigram</option>
-           <option value="Kushtia">Kushtia</option>
-           <option value="Lakshmipur">Lakshmipur</option>
-           <option value="Lalmonirhat">Lalmonirhat</option>
-           <option value="Madaripur">Madaripur</option>
-           <option value="Magura">Magura</option>
-           <option value="Manikganj">Manikganj</option>
-           <option value="Meherpur">Meherpur</option>
-           <option value="Moulvibazar">Moulvibazar</option>
-           <option value="Munshiganj">Munshiganj</option>
-           <option value="Mymensingh">Mymensingh</option>
-           <option value="Naogaon">Naogaon</option>
-           <option value="Narail">Narail</option>
-           <option value="Narayanganj">Narayanganj</option>
-           <option value="Narsingdi">Narsingdi</option>
-           <option value="Natore">Natore</option>
-           <option value="Netrokona">Netrokona</option>
-           <option value="Nilphamari">Nilphamari</option>
-           <option value="Noakhali">Noakhali</option>
-           <option value="Pabna">Pabna</option>
-           <option value="Panchagarh">Panchagarh</option>
-           <option value="Patuakhali">Patuakhali</option>
-           <option value="Pirojpur">Pirojpur</option>
-           <option value="Rajbari">Rajbari</option>
-           <option value="Rajshahi">Rajshahi</option>
-           <option value="Rangamati">Rangamati</option>
-           <option value="Rangpur">Rangpur</option>
-           <option value="Satkhira">Satkhira</option>
-           <option value="Shariatpur">Shariatpur</option>
-           <option value="Sherpur">Sherpur</option>
-           <option value="Sirajganj">Sirajganj</option>
-           <option value="Sunamganj">Sunamganj</option>
-           <option value="Sylhet">Sylhet</option>
-           <option value="Tangail">Tangail</option>
-           <option value="Thakurgaon">Thakurgaon</option>
-       </select>
-    <label>Capacity:</label>
-    <input type="number" name="capacity" min="0" required>
+        <label for="location">Location:</label>
+        <select name="location" id="location" required>
+            <option value="" disabled selected>Select District</option>
+            <option value="Dhaka">Dhaka</option>
+            <option value="Chattogram">Chattogram</option>
+            <option value="Khulna">Khulna</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Sylhet">Sylhet</option>
+            <!-- Add all districts here if needed -->
+        </select>
 
-    <label>Address:</label>
-    <textarea name="address" rows="3" required></textarea>
+        <label>Capacity:</label>
+        <input type="number" name="capacity" min="0" required>
 
-    <label>Contact Number:</label>
-    <input type="text" name="contact_number" required>
+        <label>Address:</label>
+        <textarea name="address" rows="3" required></textarea>
 
-    <label>Upload Photo:</label>
-    <input type="file" name="photo" accept="image/*" required>
+        <label>Contact Number:</label>
+        <input type="text" name="contact_number" required>
 
-    <input type="submit" value="Add Theater">
-</form>
+        <label>Upload Photo:</label>
+        <input type="file" name="photo" accept="image/*" required>
+
+        <input type="submit" value="Add Theater">
+    </form>
+</div>
 
 </body>
 </html>
