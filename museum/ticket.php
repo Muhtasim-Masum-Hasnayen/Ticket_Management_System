@@ -2,7 +2,7 @@
 session_start();
 require_once '../db_connect.php';
 
-// Get latest museum booking (you can pass booking_id via GET for precision)
+// Get latest museum booking (optional: replace with GET param for better control)
 $stmt = $conn->query("SELECT * FROM museum_bookings ORDER BY booking_id DESC LIMIT 1");
 $booking = $stmt->fetch();
 
@@ -25,26 +25,113 @@ $museum = $museumStmt->fetch();
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      padding: 40px;
-      background-color: #f8f9fa;
+      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
+      font-family: 'Segoe UI', sans-serif;
+      padding: 50px;
+      color: #333;
     }
+
     .ticket {
-      max-width: 600px;
+      position: relative;
+      background: #fff;
+      max-width: 700px;
       margin: auto;
-      padding: 30px;
-      border: 2px dashed #333;
-      background-color: #fff;
-      border-radius: 10px;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      border: 4px dashed #6c5ce7;
+      background-image: url('SmartTicketLogo.png');
+      background-repeat: no-repeat;
+      background-position: right 30px top 30px;
+      background-size: 80px;
     }
+
+    .ticket::before {
+      content: "SmartTicket";
+      position: absolute;
+      bottom: 200px;
+      right: -50px;
+      font-size: 36px;
+      font-weight: bold;
+      background: linear-gradient(to right, #6c5ce7, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Courier New', monospace;
+      transform: rotate(270deg);
+    }
+
     .ticket h2 {
-      margin-bottom: 20px;
+      font-weight: 700;
+      color: #6c5ce7;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
     }
-    .ticket-info {
-      font-size: 16px;
-      line-height: 1.6;
+
+    .ticket-info p {
+      font-size: 18px;
+      margin: 10px 0;
     }
+
+    .ticket-info strong {
+      color: #555;
+    }
+
     .btn-print {
-      margin-top: 20px;
+      margin-top: 40px;
+      background: linear-gradient(to right, #6c5ce7, #ff6b6b);
+      border: none;
+      padding: 12px 30px;
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-print:hover {
+      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
+    }
+
+    @media print {
+      body {
+        background: none !important;
+      }
+
+      .ticket {
+        border: 2px dashed #333 !important;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background-image: url('SmartTicketLogo.png') !important;
+        background-repeat: no-repeat !important;
+        background-position: right 30px top 30px !important;
+        background-size: 80px !important;
+      }
+
+      .btn-print,
+      .btn,
+      nav,
+      header,
+      footer {
+        display: none !important;
+      }
+
+      .ticket::before {
+        content: "SmartTicket";
+        position: absolute;
+        bottom: 200px;
+        right: -50px;
+        font-size: 36px;
+        font-weight: bold;
+        background: linear-gradient(to right, #6c5ce7, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-family: 'Courier New', monospace;
+        transform: rotate(270deg);
+      }
     }
   </style>
 </head>
@@ -63,7 +150,9 @@ $museum = $museumStmt->fetch();
     <p><strong>Ticket ID:</strong> #<?= str_pad($booking['booking_id'], 6, '0', STR_PAD_LEFT) ?></p>
   </div>
 
-  <button class="btn btn-primary btn-print" onclick="window.print()">Print Ticket</button>
+  <div class="text-center">
+    <button class="btn btn-print" onclick="window.print()">Print Ticket</button>
+  </div>
 </div>
 
 </body>
