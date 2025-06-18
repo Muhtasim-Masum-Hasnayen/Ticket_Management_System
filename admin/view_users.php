@@ -252,14 +252,15 @@ $users = $usersStmt->fetchAll(PDO::FETCH_ASSOC);
 <!-- ---------- Sidebar ---------- -->
 <div class="sidebar">
     <h2>Admin Panel</h2>
-    <a href="dashboard.php">🏠 Dashboard</a>
-    <a href="view_users.php" class="active">👥 View Users</a>
-    <a href="add_movie.php?type=movie">➕ Add Movie</a>
-    <a href="add_theater.php">🏛 Add Theater</a>
-    <a href="add_museum.php?type=museum">🖼 Add Museum</a>
-    <a href="add_park.php?type=park">🌳 Add Park</a>
-    <a href="view_bookings.php">📄 View Bookings</a>
-    <a href="logout.php">🚪 Logout</a>
+       <a href="dashboard.php">🏠 Dashboard</a>
+       <a href="view_users.php">👥 View Users</a>
+       <a href="a_contact.php">📄 Contact Message</a>
+       <a href="add_movie.php?type=movie">➕ Add Movie</a>
+       <a href="add_theater.php">🏛 Add Theater</a>
+       <a href="add_museum.php?type=Add Movie_Theater">🖼 Add Museum</a>
+       <a href="add_park.php?type=park">🌳 Add Park</a>
+       <a href="view_bookings.php">📄 View Bookings</a>
+       <a href="admin_login.php">🚪 Logout</a>
 </div>
 
 <!-- ---------- Header ---------- -->

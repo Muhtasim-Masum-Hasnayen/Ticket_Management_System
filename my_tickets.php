@@ -202,11 +202,11 @@ usort($all_bookings, function($a, $b) {
 
       body.dark-mode .upcoming-ticket {
         margin: 40px 0;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.08);
-        border-left: 5px solid #ffd369;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(255, 211, 105, 0.2);
+                padding: 20px;
+                background: rgba(255, 255, 255, 0.08);
+                border-left: 5px solid #ffd369;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(255, 211, 105, 0.2);
       }
 
       body.dark-mode .upcoming-ticket h3 {
@@ -260,7 +260,7 @@ usort($all_bookings, function($a, $b) {
       body.dark-mode .explore-item h4,
       body.dark-mode .offer-item h4 {
         font-size: 14px;
-        color: #fff;
+        color: #f0f0f0;
       }
 
       body.dark-mode footer {
@@ -534,10 +534,10 @@ usort($all_bookings, function($a, $b) {
 
 
 
-  <div class="ticket-list">
+
     <?php if (!empty($all_bookings)): ?>
       <?php foreach ($all_bookings as $ticket): ?>
-        <div class="ticket-card">
+        <div class="upcoming-ticket">
           <h4><?= htmlspecialchars($ticket['event']) ?> <span>(<?= $ticket['type'] ?>)</span></h4>
           <p><strong>Date:</strong> <?= date("F j, Y, g:i a", strtotime($ticket['booking_time'])) ?></p>
           <p><strong>Location:</strong> <?= htmlspecialchars($ticket['location']) ?></p>
@@ -547,7 +547,6 @@ usort($all_bookings, function($a, $b) {
     <?php else: ?>
       <p>You haven't booked any tickets yet.</p>
     <?php endif; ?>
-  </div>
 
 
     <footer>

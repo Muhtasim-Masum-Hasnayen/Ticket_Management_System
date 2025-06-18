@@ -148,9 +148,29 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
           </div>
 
+
         </div>
+
       <?php endforeach; ?>
     </div>
+    <a href="javascript:history.back()" style="
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #f6d365, #fda085);
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    ">
+      <i class="fas fa-arrow-left"></i> Back
+    </a>
+
 <script>
   function openShowtimeModal(movieId) {
     // Here you can load showtime options dynamically using AJAX or navigate to a showtime selection page

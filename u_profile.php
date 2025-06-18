@@ -553,12 +553,15 @@ $data = $result->fetch();
   <!-- Sidebar -->
   <div class="sidebar">
     <h1>🎟 SmartTicket</h1>
-    <a href="u_profile.php"><i class="fas fa-user"></i> Profile</a>
-    <a href="dashboard.php"><i class="fas fa-house"></i> Dashboard</a>
-    <a href="Movies.php"><i class="fas fa-film"></i> Movies</a>
-    <a href="Museums.php"><i class="fas fa-landmark"></i> Museums</a>
-    <a href="u_parks.php"><i class="fas fa-tree"></i> Parks</a>
-    <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="u_profile.php" >
+          <i class="fas fa-user"></i> Profile
+        </a>
+        <a href="dashboard.php"><i class="fas fa-house"></i> Dashboard</a>
+        <a href="ticket/Movies.php"><i class="fas fa-film"></i> Movies</a>
+        <a href="Museums.php"><i class="fas fa-landmark"></i> Museums</a>
+        <a href="u_parks.php"><i class="fas fa-tree"></i> Parks</a>
+        <a href="my_tickets.php">🎟️ My Tickets</a>
+        <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
   <!-- Main Content -->

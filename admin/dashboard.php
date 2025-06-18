@@ -72,7 +72,8 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
         .container {
             background: linear-gradient(135deg, #ffffff, #ffcce5);
             padding-top: 30px;
-            max-width: 1500px;
+            padding-right: -10px;
+            max-width: 1300px;
             margin: auto;
         }
 
@@ -198,6 +199,7 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
 </header>
 <div class="sidebar">
     <h2>Admin Panel</h2>
+    <a href="dashboard.php">🏠 Dashboard</a>
     <a href="view_users.php">👥 View Users</a>
     <a href="a_contact.php">📄 Contact Message</a>
     <a href="add_movie.php?type=movie">➕ Add Movie</a>

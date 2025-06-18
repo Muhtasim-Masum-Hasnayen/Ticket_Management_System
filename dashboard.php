@@ -84,7 +84,7 @@ $movieStmt = $conn->prepare("
   JOIN movie_showtimes s ON m.movie_id = s.movie_id
   GROUP BY m.movie_id
   ORDER BY MAX(s.created_at) DESC
-  LIMIT 3
+  LIMIT 4
 ");
 $movieStmt->execute();
 $latestMovies = $movieStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -308,7 +308,7 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
       body.dark-mode .offer-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 15px;
+        gap: 80px;
       }
 
       body.dark-mode .explore-item,
@@ -330,8 +330,8 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
 
       body.dark-mode .explore-item img,
       body.dark-mode .offer-item img {
-        width: 100%;
-        height: 100px;
+        width: 95%;
+        height: 350px;
         object-fit: cover;
         border-radius: 8px;
         margin-bottom: 8px;
@@ -340,7 +340,7 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
       body.dark-mode .explore-item h4,
       body.dark-mode .offer-item h4 {
         font-size: 14px;
-        color: #fff;
+        color: #f0f0f0;
       }
 
       body.dark-mode footer {
@@ -493,8 +493,8 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
       body.light-mode .explore-grid,
       body.light-mode .offer-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 2fr));
+        gap: 80px;
       }
 
       body.light-mode .explore-item,
@@ -516,8 +516,8 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
 
       body.light-mode .explore-item img,
       body.light-mode .offer-item img {
-        width: 100%;
-        height: 100px;
+        width: 95%;
+        height: 350px;
         object-fit: cover;
         border-radius: 8px;
         margin-bottom: 8px;
@@ -635,9 +635,12 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
            <img src="<?php echo 'admin/' . htmlspecialchars($movie['photo']); ?>" alt="<?php echo htmlspecialchars($movie['title']); ?>" />
 
             <h4><?php echo htmlspecialchars($movie['title']); ?></h4>
-            <p><strong>Genre:</strong> <?php echo htmlspecialchars($movie['genre']); ?></p>
-            <p><strong>Duration:</strong> <?php echo htmlspecialchars($movie['duration_minutes']); ?> mins</p>
-            <p><strong>Theaters:</strong> <?php echo $movie['theater_count']; ?></p>
+            <p style="font-size: 14px; color: #999CA3;">
+              <strong>Genre:</strong> <?php echo htmlspecialchars($movie['genre']); ?> &nbsp; | &nbsp;
+              <strong>Duration:</strong> <?php echo htmlspecialchars($movie['duration_minutes']); ?> mins &nbsp; | &nbsp;
+              <strong>Theaters:</strong> <?php echo $movie['theater_count']; ?>
+            </p>
+
           </div>
         <?php endforeach; ?>
       </div>
