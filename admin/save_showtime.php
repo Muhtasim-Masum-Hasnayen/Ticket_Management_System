@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: add_movie.php?success=1");
         exit;
     } else {
-        header("Location: add_movie.php?error=1");
+        header("Location: dashboard.php?error=1");
         exit;
     }
 }

@@ -217,10 +217,10 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
 
 <div class="container">
 
-    <h2>🎬 Movies <a href="add_movie_theater.php?type=movie" class="button">Add Movie</a></h2>
+    <h2>🎬 Movies <a href="add_movie_theater.php?type=movie" class="button">Add Movie's Showtime & Theater</a></h2>
     <table>
         <tr>
-            <th>ID</th><th>Title</th><th>Duration (min)</th><th>Release Date</th><th>Actions</th>
+            <th>ID</th><th>Title</th><th>Duration (min)</th><th>Language</th> <th>Genre</th><th>Cast</th><th>Actions</th>
         </tr>
         <?php foreach ($movies as $movie): ?>
         <tr>
@@ -228,7 +228,9 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
             <td><?= htmlspecialchars($movie['title']) ?></td>
             <td><?= htmlspecialchars($movie['duration_minutes']) ?></td>
 
-            <td><?= htmlspecialchars($movie['release_date']) ?></td>
+            <td><?= htmlspecialchars($movie['language']) ?></td> <!-- New: Language -->
+            <td><?= htmlspecialchars($movie['genre']) ?></td>    <!-- New: Genre -->
+            <td><?= htmlspecialchars($movie['cast']) ?></td>
             <td class="actions">
                 <a href="edit_item.php?type=movie&id=<?= $movie['movie_id'] ?>">Edit</a>
                 <a href="delete_item.php?type=movie&id=<?= $movie['movie_id'] ?>" onclick="return confirm('Delete this movie?')">Delete</a>

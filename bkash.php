@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php else: ?>
             <!-- Show after clicking verify -->
             <div class="form-group">
-                <label>Verification Code (Enter 22):</label>
+                <label>Verification Code :</label>
                 <input type="text" name="verification_code" required>
             </div>
             <button type="submit">Submit Payment</button>
