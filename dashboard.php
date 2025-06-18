@@ -4,13 +4,13 @@ session_start();
 require_once 'db_connect.php';
 
 // Redirect to login if not logged in
-if (!isset($_SESSION['name'])) {
+if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();
 }
 
 // Assume you also have user ID and photo stored in session
-$user_id = $_SESSION['id'] ?? 1; // fallback id if missing
+$user_id = $_SESSION['id'];  // fallback id if missing
 
 $stmt = $conn->prepare("SELECT name, phone, photo FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
@@ -20,6 +20,60 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 $user_name = $user['name'];
 $user_phone = !empty($user['phone']) ? $user['phone'] : 'N/A';
 $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
+
+
+// Count tickets per table
+function getCount($conn, $table, $user_id) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM $table WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    return $stmt->fetchColumn();
+}
+
+$cnt_movies  = getCount($conn, 'bookings', $user_id);
+$cnt_museums = getCount($conn, 'museum_bookings', $user_id);
+$cnt_parks   = getCount($conn, 'park_bookings', $user_id);
+$cnt_tickets = $cnt_movies + $cnt_museums + $cnt_parks;
+
+// Get next upcoming ticket
+$stmtt = $conn->prepare("
+    SELECT
+        'Movie' AS type,
+        b.booking_time,
+        m.title AS event,
+        CONCAT(t.name, ' - ', t.location) AS location
+    FROM bookings b
+    JOIN movie_showtimes s ON b.showtime_id = s.showtime_id
+    JOIN movies m ON s.movie_id = m.movie_id
+    JOIN theaters t ON s.theater_id = t.theater_id
+    WHERE b.user_id = ? AND b.booking_time >= NOW()
+
+    UNION
+
+    SELECT
+        'Museum' AS type,
+        mb.booking_time,
+        mu.name AS event,
+        mu.address AS location
+    FROM museum_bookings mb
+    JOIN museums mu ON mb.museum_id = mu.museum_id
+    WHERE mb.user_id = ? AND mb.booking_time >= NOW()
+
+    UNION
+
+    SELECT
+        'Park' AS type,
+        pb.booking_time,
+        p.name AS event,
+        p.location
+    FROM park_bookings pb
+    JOIN parks p ON pb.park_id = p.park_id
+    WHERE pb.user_id = ? AND pb.booking_time >= NOW()
+
+    ORDER BY booking_time ASC
+    LIMIT 1
+");
+$stmtt->execute([$user_id, $user_id, $user_id]);
+$upcoming = $stmtt->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -472,32 +526,37 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
       <div class="card">
         <i class="fas fa-film"></i>
         <h3>🎬 Movies</h3>
-        <p>You have 1 show tonight</p>
+        <p><?= $cnt_movies ?> movie<?= $cnt_movies !== "1" ? "s" : "" ?> booked</p>
       </div>
       <div class="card">
         <i class="fas fa-landmark"></i>
         <h3>🏛️ Museums</h3>
-        <p>2 museum visits this week</p>
+        <p><?= $cnt_museums ?> museum<?= $cnt_museums !== "1" ? " visits" : " visit" ?></p>
       </div>
       <div class="card">
         <i class="fas fa-tree"></i>
         <h3>🏞️ Parks</h3>
-        <p>1 park visit planned</p>
+        <p><?= $cnt_parks ?> park<?= $cnt_parks !== "1" ? " visits" : " visit" ?></p>
       </div>
       <div class="card">
         <i class="fas fa-ticket-alt"></i>
         <h3>🎟️ Tickets</h3>
-        <p>3 tickets booked</p>
+        <p><?= $cnt_tickets ?> total ticket<?= $cnt_tickets !== "1" ? "s" : "" ?></p>
       </div>
     </section>
 
     <section class="upcoming-ticket">
       <h3>🎉 Upcoming Ticket</h3>
-      <p><strong>Event:</strong> Rock Music Festival</p>
-      <p><strong>Date:</strong> June 15, 2025</p>
-      <p><strong>Venue:</strong> Central Park</p>
-      <p><strong>Seat:</strong> Section B, Row 12, Seat 7</p>
+      <?php if ($upcoming): ?>
+        <p><strong>Type:</strong> <?= htmlspecialchars($upcoming['type']) ?></p>
+        <p><strong>Event:</strong> <?= htmlspecialchars($upcoming['event']) ?></p>
+        <p><strong>Date & Time:</strong> <?= date("F j, Y, g:i a", strtotime($upcoming['booking_time'])) ?></p>
+        <p><strong>Location:</strong> <?= htmlspecialchars($upcoming['location']) ?></p>
+      <?php else: ?>
+        <p>No upcoming tickets planned.</p>
+      <?php endif; ?>
     </section>
+
 
     <section class="explore-section">
       <h2>Explore Movies</h2>
@@ -517,19 +576,6 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
       </div>
     </section>
 
-    <section class="offer-section">
-      <h2>Special Offers</h2>
-      <div class="offer-grid">
-        <div class="offer-item">
-          <img src="assets/offer1.jpg" alt="Offer 1" />
-          <h4>20% off on Rock Festival</h4>
-        </div>
-        <div class="offer-item">
-          <img src="assets/offer2.jpg" alt="Offer 2" />
-          <h4>Buy 1 Get 1 Free</h4>
-        </div>
-      </div>
-    </section>
 
     <footer>
       &copy; 2025 SmartTicket. All rights reserved.

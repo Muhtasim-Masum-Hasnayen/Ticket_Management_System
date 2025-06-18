@@ -220,15 +220,15 @@ $parks   = $conn->query("SELECT * FROM parks   ORDER BY created_at DESC")
     <h2>🎬 Movies <a href="add_movie_theater.php?type=movie" class="button">Add Movie</a></h2>
     <table>
         <tr>
-            <th>ID</th><th>Title</th><th>Duration (min)</th><th>Available Tickets</th><th>Price</th><th>Actions</th>
+            <th>ID</th><th>Title</th><th>Duration (min)</th><th>Release Date</th><th>Actions</th>
         </tr>
         <?php foreach ($movies as $movie): ?>
         <tr>
             <td><?= htmlspecialchars($movie['movie_id']) ?></td>
             <td><?= htmlspecialchars($movie['title']) ?></td>
             <td><?= htmlspecialchars($movie['duration_minutes']) ?></td>
-            <td><?= htmlspecialchars($movie['available_tickets']) ?></td>
-            <td><?= htmlspecialchars($movie['price']) ?></td>
+
+            <td><?= htmlspecialchars($movie['release_date']) ?></td>
             <td class="actions">
                 <a href="edit_item.php?type=movie&id=<?= $movie['movie_id'] ?>">Edit</a>
                 <a href="delete_item.php?type=movie&id=<?= $movie['movie_id'] ?>" onclick="return confirm('Delete this movie?')">Delete</a>
