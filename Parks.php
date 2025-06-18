@@ -75,6 +75,78 @@ $parks = $stmt->fetchAll();
       border: none;
       width: 220px;
     }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 300px;
+      animation: popIn 0.3s ease-out;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 15px;
+      font-size: 22px;
+      color: #333;
+    }
+
+    .modal-content p {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .btn-confirm {
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .btn-confirm:hover {
+      background: #4b4be7;
+    }
+
+    .btn-cancel {
+      background: #ddd;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-cancel:hover {
+      background: #bbb;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
   </style>
 </head>
 <body>
@@ -143,10 +215,9 @@ $parks = $stmt->fetchAll();
                   <?php if ($tickets !== null): ?>
                     <p><strong>Available Tickets:</strong> <?= $tickets ?></p>
                   <?php endif; ?>
-                  <a href="book.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
-                     class="btn btn-outline-light btn-sm">Book Now</a>
-                  <a href="buy.php?park_id=<?= $id ?>&package=<?= urlencode($col) ?>"
-                     class="btn btn-outline-light btn-sm">Buy Ticket</a>
+                  <a href="#" class="btn btn-outline-light btn-sm" onclick="showLoginModal(event)">Buy Ticket</a>
+
+
                 </div>
               <?php endif; endforeach; ?>
             </div>
@@ -175,5 +246,28 @@ $parks = $stmt->fetchAll();
       });
     }
   </script>
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>🔒 Login Required</h3>
+      <p>You need to login first to buy a ticket.</p>
+      <div class="modal-buttons">
+        <a href="login.php" class="btn-confirm">Login Now</a>
+        <button onclick="closeLoginModal()" class="btn-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <script>
+  function showLoginModal(event) {
+      event.preventDefault(); // Prevents default anchor action
+      document.getElementById("loginModal").style.display = "flex";
+  }
+
+  function closeLoginModal() {
+      document.getElementById("loginModal").style.display = "none";
+  }
+  </script>
+
+
 </body>
 </html>
