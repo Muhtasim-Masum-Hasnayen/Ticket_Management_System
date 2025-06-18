@@ -147,7 +147,7 @@
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Parks.php">Parks</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Museums.php">Museums</a>
+          <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="museum.php">Museums</a>
         </li>
         <li class="nav-item">
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="My_Ticket.php">My Tickets</a>
@@ -156,7 +156,7 @@
           <a class="nav-link fs-5 fw-semibold text-primary hover-effect" href="Contact.php">Contact</a>
         </li>
         <!-- Dark Mode Toggle -->
-        <div id="darkModeToggle" style="position: fixed; top: 200px; right: 20px; z-index: 9999; cursor: pointer; font-size: 34px;">
+        <div id="darkModeToggle" style="position: fixed; top: 100px; right: 20px; z-index: 9999; cursor: pointer; font-size: 34px;">
           🌙
         </div>
 
