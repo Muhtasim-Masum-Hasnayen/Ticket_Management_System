@@ -18,22 +18,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $show_verification_box = true;
     } elseif (isset($_POST['verification_code'])) {
         if ($_POST['verification_code'] == '22') {
-            $user_id = $_SESSION['id'];
-            $payment_method = 'Nagad';
-            $transaction_id = $_POST['trx_id'];
-            $showtime_id = $booking['showtime_id'];
-            $seats = $booking['selected_seats'];
+                    $user_id = $_SESSION['id'];
+                    $payment_method = 'nagad';
+                    $transaction_id = $_POST['trx_id'];
+                    $showtime_id = $booking['showtime_id'];
+                    $seats = $booking['selected_seats']; // This should be an array
+                    $seat_str = implode(',', $seats); // Combine seats like "A1,A2,B3"
 
-            $stmt = $conn->prepare("INSERT INTO bookings (user_id, showtime_id, seat_number, payment_method, transaction_id, total_amount) VALUES (?, ?, ?, ?, ?, ?)");
-            foreach ($seats as $seat) {
-                $stmt->execute([$user_id, $showtime_id, $seat, $payment_method, $transaction_id, $amount]);
-                $booking_id = $conn->lastInsertId();
-                header("Location: ticket/ticket.php?booking_id=" . $booking_id);
-                exit;
-            }
+                    // Insert a single booking row
+                    $stmt = $conn->prepare("INSERT INTO bookings (user_id, showtime_id, seat_number, payment_method, transaction_id, total_amount)
+                                            VALUES (?, ?, ?, ?, ?, ?)");
+                    $stmt->execute([$user_id, $showtime_id, $seat_str, $payment_method, $transaction_id, $amount]);
 
-            unset($_SESSION['pending_booking']);
-        } else {
+                    $booking_id = $conn->lastInsertId(); // This is now the ID for all selected seats
+
+                    // Mark each seat as booked in the 'seats' table
+                    $update_stmt = $conn->prepare("UPDATE seats SET is_booked = 1 WHERE showtime_id = ? AND seat_number = ?");
+                    foreach ($seats as $seat) {
+                        $update_stmt->execute([$showtime_id, $seat]);
+                    }
+
+                    // Clear pending booking session data
+                    unset($_SESSION['pending_booking']);
+
+                    // Redirect to ticket
+                    header("Location: ticket/ticket.php?booking_id=" . $booking_id);
+                    exit;
+
+                } else {
             $error_message = "❌ Incorrect verification code.";
             $show_verification_box = true;
         }

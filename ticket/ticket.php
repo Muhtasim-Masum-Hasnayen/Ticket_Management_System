@@ -23,6 +23,13 @@ if (!$ticket) {
     echo "Ticket not found.";
     exit;
 }
+// Clear pending booking data
+if (isset($_SESSION['pending_booking'])) {
+    unset($_SESSION['pending_booking']);
+}
+
+// Proceed with showing success message or redirecting
+
 ?>
 
 <!DOCTYPE html>
