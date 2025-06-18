@@ -102,7 +102,8 @@
 
     <p class="mt-3 text-muted">Don't have an account? <a href="register.php">Register here</a></p>
 
-    <p class="mt-4">Or sign in with</p>
+
+    <p class="mt-4"><a href="LandingPage.php">Go To Homepage</a> Or sign in with</p>
     <div class="social-icons">
       <a href="#"><i class="fab fa-google"></i></a>
       <a href="#"><i class="fab fa-facebook"></i></a>

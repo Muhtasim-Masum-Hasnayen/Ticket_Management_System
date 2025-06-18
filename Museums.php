@@ -322,6 +322,24 @@ $districts = [
       <?php $popupIndex++; ?>
     <?php endforeach; ?>
   </div>
+  <a href="dashboard.php" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: linear-gradient(to left, #ff6b6b, #6c5ce7);
+      color: #fff;
+      text-decoration: none;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      transition: all 0.3s ease;
+  ">
+    <i class="fas fa-home"></i> Dashboard
+  </a>
+
 
   <script>
     function openPopup(id) {

@@ -153,23 +153,24 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       <?php endforeach; ?>
     </div>
-    <a href="javascript:history.back()" style="
+    <a href="../dashboard.php" style="
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 20px;
-        background: linear-gradient(135deg, #f6d365, #fda085);
+        padding: 10px 22px;
+        background: linear-gradient(to right, #ff6b6b, #6c5ce7);
         color: #fff;
         text-decoration: none;
         border: none;
         border-radius: 10px;
         font-weight: 600;
         font-size: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         transition: all 0.3s ease;
     ">
-      <i class="fas fa-arrow-left"></i> Back
+      <i class="fas fa-home"></i> Dashboard
     </a>
+
 
 <script>
   function openShowtimeModal(movieId) {

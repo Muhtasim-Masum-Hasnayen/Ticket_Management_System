@@ -255,7 +255,7 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
             <i class="fas fa-landmark fa-3x mb-3"></i>
             <h4>Museum Tickets</h4>
             <p>Discover art, history, and culture today.</p>
-            <a href="Museums.php" class="btn btn-light btn-sm">Book Now</a>
+            <a href="museum.php" class="btn btn-light btn-sm">Book Now</a>
           </div>
         </div>
       </div>
@@ -272,7 +272,7 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
       <div class="row g-4">
         <div class="col-md-3">
           <i class="fas fa-bolt"></i>
-          <h5 class="mt-2">Fast Booking</h5>
+          <h5 class="mt-2">Fast Service</h5>
         </div>
         <div class="col-md-3">
           <i class="fas fa-lock"></i>

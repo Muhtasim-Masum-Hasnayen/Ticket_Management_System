@@ -594,17 +594,17 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
       <div class="card">
         <i class="fas fa-film"></i>
         <h3>🎬 Movies</h3>
-        <p><?= $cnt_movies ?> movie<?= $cnt_movies !== "1" ? "s" : "" ?> booked</p>
+        <p>Purchase <?= $cnt_movies ?> <?= $cnt_movies !== "1" ? "s" : "" ?> Tickets of Movies</p>
       </div>
       <div class="card">
         <i class="fas fa-landmark"></i>
         <h3>🏛️ Museums</h3>
-        <p><?= $cnt_museums ?> museum<?= $cnt_museums !== "1" ? " visits" : " visit" ?></p>
+        <p>Purchase <?= $cnt_museums ?> Ticket'<?= $cnt_museums !== "1" ? " s" : " visit" ?> of Museums</p>
       </div>
       <div class="card">
         <i class="fas fa-tree"></i>
         <h3>🏞️ Parks</h3>
-        <p><?= $cnt_parks ?> park<?= $cnt_parks !== "1" ? " visits" : " visit" ?></p>
+        <p>Purchase <?= $cnt_parks ?> <?= $cnt_parks !== "1" ? " s" : " visit" ?>Tickets of Parks</p>
       </div>
       <div class="card">
         <i class="fas fa-ticket-alt"></i>

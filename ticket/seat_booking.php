@@ -99,7 +99,7 @@ $bookedSeats = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
   <p><strong>Theater:</strong> <?= htmlspecialchars($details['theater']) ?></p>
   <p><strong>Show Time:</strong> <?= htmlspecialchars($details['show_time']) ?></p>
-  <p><strong>Price per seat:</strong> ₹<?= htmlspecialchars($details['price']) ?></p>
+  <p><strong>Price per seat:</strong> TK. <?= htmlspecialchars($details['price']) ?></p>
 
   <hr>
 

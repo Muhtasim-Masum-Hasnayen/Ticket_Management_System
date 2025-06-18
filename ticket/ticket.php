@@ -165,7 +165,28 @@ if (isset($_SESSION['pending_booking'])) {
   <div class="text-center">
     <button class="btn btn-print" onclick="window.print()">Print Ticket</button>
   </div>
-</div>
 
+
+</div>
+<!-- Place this after your theater cards section -->
+  <div style="text-align: center; margin-top: 60px;">
+    <a href="../dashboard.php" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: #fff;
+      text-decoration: none;
+      border: none;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    ">
+      <i class="fas fa-home"></i> Dashboard
+    </a>
+  </div>
 </body>
 </html>
