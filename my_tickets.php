@@ -1,17 +1,13 @@
 <?php
 session_start();
-
 require_once 'db_connect.php';
 
-// Redirect to login if not logged in
 if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();
 }
-
-// Assume you also have user ID and photo stored in session
+$user_id = $_SESSION['id'];
 $user_id = $_SESSION['id'];  // fallback id if missing
-
 $stmt = $conn->prepare("SELECT name, phone, photo FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -22,142 +18,66 @@ $user_phone = !empty($user['phone']) ? $user['phone'] : 'N/A';
 $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
 
 
-// Count tickets per table
-function getCount($conn, $table, $user_id) {
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM $table WHERE user_id = ?");
-    $stmt->execute([$user_id]);
-    return $stmt->fetchColumn();
-}
-
-$cnt_movies  = getCount($conn, 'bookings', $user_id);
-$cnt_museums = getCount($conn, 'museum_bookings', $user_id);
-$cnt_parks   = getCount($conn, 'park_bookings', $user_id);
-$cnt_tickets = $cnt_movies + $cnt_museums + $cnt_parks;
-
-// Get next upcoming ticket
-$stmtt = $conn->prepare("
-    SELECT
-        'Movie' AS type,
-        b.booking_time,
-        m.title AS event,
-        CONCAT(t.name, ' - ', t.location) AS location
-    FROM bookings b
-    JOIN movie_showtimes s ON b.showtime_id = s.showtime_id
-    JOIN movies m ON s.movie_id = m.movie_id
-    JOIN theaters t ON s.theater_id = t.theater_id
-    WHERE b.user_id = ? AND b.booking_time >= NOW()
-
-    UNION
-
-    SELECT
-        'Museum' AS type,
-        mb.booking_time,
-        mu.name AS event,
-        mu.address AS location
-    FROM museum_bookings mb
-    JOIN museums mu ON mb.museum_id = mu.museum_id
-    WHERE mb.user_id = ? AND mb.booking_time >= NOW()
-
-    UNION
-
-    SELECT
-        'Park' AS type,
-        pb.booking_time,
-        p.name AS event,
-        p.location
-    FROM park_bookings pb
-    JOIN parks p ON pb.park_id = p.park_id
-    WHERE pb.user_id = ? AND pb.booking_time >= NOW()
-
-    ORDER BY booking_time ASC
-    LIMIT 1
-");
-$stmtt->execute([$user_id, $user_id, $user_id]);
-$upcoming = $stmtt->fetch(PDO::FETCH_ASSOC);
-
-
-
-// Latest movies in showtimes (group by movie)
-$movieStmt = $conn->prepare("
-  SELECT m.movie_id, m.title, m.genre, m.duration_minutes, m.photo, COUNT(DISTINCT s.theater_id) AS theater_count
-  FROM movies m
-  JOIN movie_showtimes s ON m.movie_id = s.movie_id
-  GROUP BY m.movie_id
-  ORDER BY MAX(s.created_at) DESC
-  LIMIT 3
-");
-$movieStmt->execute();
-$latestMovies = $movieStmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Latest museums
-$museumStmt = $conn->prepare("
-  SELECT museum_id, name, photo
-  FROM museums
-  ORDER BY created_at DESC
-  LIMIT 3
-");
-$museumStmt->execute();
-$latestMuseums = $museumStmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Latest parks
-$parkStmt = $conn->prepare("
-  SELECT park_id, name, photo
-  FROM parks
-  ORDER BY created_at DESC
-  LIMIT 3
-");
-$parkStmt->execute();
-$latestParks = $parkStmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-
-$stmtt = $conn->prepare("
-  SELECT 'Movie' AS type, mb.booking_time, m.title AS event, t.name AS location
-  FROM bookings mb
-  JOIN movie_showtimes st ON mb.showtime_id = st.showtime_id
+// Fetch all movie bookings
+$movie_stmt = $conn->prepare("
+  SELECT 'Movie' AS type, b.booking_time, m.title AS event, t.name AS location, b.total_amount
+  FROM bookings b
+  JOIN movie_showtimes st ON b.showtime_id = st.showtime_id
   JOIN movies m ON st.movie_id = m.movie_id
   JOIN theaters t ON st.theater_id = t.theater_id
-  WHERE mb.user_id = ?
+  WHERE b.user_id = ?
+  ORDER BY b.booking_time DESC
+");
+$movie_stmt->execute([$user_id]);
+$movie_bookings = $movie_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  UNION
-
-  SELECT 'Museum', mb.booking_time, m.name, m.address
+// Fetch all museum bookings
+$museum_stmt = $conn->prepare("
+  SELECT 'Museum' AS type, mb.booking_time, m.name AS event, m.address AS location, mb.total_amount
   FROM museum_bookings mb
   JOIN museums m ON mb.museum_id = m.museum_id
   WHERE mb.user_id = ?
+  ORDER BY mb.booking_time DESC
+");
+$museum_stmt->execute([$user_id]);
+$museum_bookings = $museum_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  UNION
-
-  SELECT 'Park', pb.booking_time, p.name, p.location
+// Fetch all park bookings
+$park_stmt = $conn->prepare("
+  SELECT 'Park' AS type, pb.booking_time, p.name AS event, p.location, pb.total_amount
   FROM park_bookings pb
   JOIN parks p ON pb.park_id = p.park_id
   WHERE pb.user_id = ?
-
-  ORDER BY booking_time DESC LIMIT 1
+  ORDER BY pb.booking_time DESC
 ");
-$stmtt->execute([$user_id, $user_id, $user_id]);
-$latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
+$park_stmt->execute([$user_id]);
+$park_bookings = $park_stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Merge all bookings
+$all_bookings = array_merge($movie_bookings, $museum_bookings, $park_bookings);
 
-
-
+// Sort by booking_time descending
+usort($all_bookings, function($a, $b) {
+    return strtotime($b['booking_time']) - strtotime($a['booking_time']);
+});
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SmartTicket | Dashboard</title>
+  <meta charset="UTF-8">
 
+  <link rel="stylesheet" href="assets/styles.css"> <!-- Replace with your actual CSS -->
   <!-- Bootstrap CSS for modal & responsive -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  <style>
-    * {
+</head>
+<style>
+
+  * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -562,13 +482,34 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
         background: #007acc;
         color: #fff;
       }
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+.ticket-card {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-left: 5px solid #3a86ff;
+  border-radius: 8px;
+}
+.ticket-card h4 span {
+  font-weight: normal;
+  color: gray;
+  font-size: 0.9em;
+}
 
-  </style>
-</head>
+</style>
+
+
+
+
+
 
 <body class="light-mode">
   <div class="sidebar">
-    <h1>🎟 SmartTicket</h1>
+    <h1>🎟 MyTicket</h1>
     <a href="u_profile.php" >
       <i class="fas fa-user"></i> Profile
     </a>
@@ -582,7 +523,7 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
 
   <div class="main-content">
     <header>
-      <h2>👋 Welcome, <span style="color:#ffd369"><?php echo htmlspecialchars($user_name); ?></span></h2>
+
             <button id="mode-toggle" aria-label="Toggle Dark/Light Mode">Dark Mode</button>
 
       <div class="profile">
@@ -590,83 +531,23 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
       </div>
     </header>
 
-    <section class="card-grid">
-      <div class="card">
-        <i class="fas fa-film"></i>
-        <h3>🎬 Movies</h3>
-        <p><?= $cnt_movies ?> movie<?= $cnt_movies !== "1" ? "s" : "" ?> booked</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-landmark"></i>
-        <h3>🏛️ Museums</h3>
-        <p><?= $cnt_museums ?> museum<?= $cnt_museums !== "1" ? " visits" : " visit" ?></p>
-      </div>
-      <div class="card">
-        <i class="fas fa-tree"></i>
-        <h3>🏞️ Parks</h3>
-        <p><?= $cnt_parks ?> park<?= $cnt_parks !== "1" ? " visits" : " visit" ?></p>
-      </div>
-      <div class="card">
-        <i class="fas fa-ticket-alt"></i>
-        <h3>🎟️ Tickets</h3>
-        <p><?= $cnt_tickets ?> total ticket<?= $cnt_tickets !== "1" ? "s" : "" ?></p>
-      </div>
-    </section>
-
-    <section class="upcoming-ticket">
-      <h3>🎟️ Most Recent Ticket</h3>
-      <?php if ($latest_booking): ?>
-        <p><strong>Type:</strong> <?= htmlspecialchars($latest_booking['type']) ?></p>
-        <p><strong>Event:</strong> <?= htmlspecialchars($latest_booking['event']) ?></p>
-        <p><strong>Booked On:</strong> <?= date("F j, Y, g:i a", strtotime($latest_booking['booking_time'])) ?></p>
-        <p><strong>Location:</strong> <?= htmlspecialchars($latest_booking['location']) ?></p>
-      <?php else: ?>
-        <p>No tickets booked yet.</p>
-      <?php endif; ?>
-    </section>
 
 
 
-    <section class="explore-section">
-      <h2>🎥 Explore Movies</h2>
-      <div class="explore-grid">
-        <?php foreach ($latestMovies as $movie): ?>
-          <div class="explore-item">
-           <img src="<?php echo 'admin/' . htmlspecialchars($movie['photo']); ?>" alt="<?php echo htmlspecialchars($movie['title']); ?>" />
-
-            <h4><?php echo htmlspecialchars($movie['title']); ?></h4>
-            <p><strong>Genre:</strong> <?php echo htmlspecialchars($movie['genre']); ?></p>
-            <p><strong>Duration:</strong> <?php echo htmlspecialchars($movie['duration_minutes']); ?> mins</p>
-            <p><strong>Theaters:</strong> <?php echo $movie['theater_count']; ?></p>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </section>
-
-    <section class="explore-section">
-      <h2>🏛️ Explore Museums</h2>
-      <div class="explore-grid">
-        <?php foreach ($latestMuseums as $museum): ?>
-          <div class="explore-item">
-            <img src="<?php echo 'admin/'. htmlspecialchars($museum['photo']); ?>" alt="<?php echo htmlspecialchars($museum['name']); ?>" />
-            <h4><?php echo htmlspecialchars($museum['name']); ?></h4>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </section>
-
-    <section class="explore-section">
-      <h2>🏞️ Explore Parks</h2>
-      <div class="explore-grid">
-        <?php foreach ($latestParks as $park): ?>
-          <div class="explore-item">
-            <img src="<?php echo 'admin/'.htmlspecialchars($park['photo']); ?>" alt="<?php echo htmlspecialchars($park['name']); ?>" />
-            <h4><?php echo htmlspecialchars($park['name']); ?></h4>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </section>
-
+  <div class="ticket-list">
+    <?php if (!empty($all_bookings)): ?>
+      <?php foreach ($all_bookings as $ticket): ?>
+        <div class="ticket-card">
+          <h4><?= htmlspecialchars($ticket['event']) ?> <span>(<?= $ticket['type'] ?>)</span></h4>
+          <p><strong>Date:</strong> <?= date("F j, Y, g:i a", strtotime($ticket['booking_time'])) ?></p>
+          <p><strong>Location:</strong> <?= htmlspecialchars($ticket['location']) ?></p>
+          <p><strong>Total Paid:</strong> ৳<?= htmlspecialchars($ticket['total_amount']) ?></p>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p>You haven't booked any tickets yet.</p>
+    <?php endif; ?>
+  </div>
 
 
     <footer>
@@ -739,8 +620,7 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
         }
       });
     </script>
+
+
 </body>
 </html>
-
-
-
