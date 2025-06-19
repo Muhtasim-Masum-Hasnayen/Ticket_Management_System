@@ -121,13 +121,7 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <option>Fantasy</option>
         </select>
       </div>
-      <div class="col-md-3">
-        <select id="originFilter" class="form-select" onchange="filterMovies()">
-          <option value="">All Origins</option>
-          <option>Bangladeshi</option>
-          <option>Hollywood</option>
-        </select>
-      </div>
+
     </div>
 
     <!-- Movies Grid -->
@@ -183,19 +177,19 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
   function filterMovies() {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
     const genreFilter = document.getElementById('genreFilter').value;
-    const originFilter = document.getElementById('originFilter').value;
+
 
     const movies = document.querySelectorAll('.movie-item');
     movies.forEach(movie => {
       const title = movie.getAttribute('data-title').toLowerCase();
       const genre = movie.getAttribute('data-genre');
-      const origin = movie.getAttribute('data-origin');
+
 
       const matchesSearch = title.includes(searchInput);
       const matchesGenre = genreFilter === '' || genre === genreFilter;
-      const matchesOrigin = originFilter === '' || origin === originFilter;
 
-      if (matchesSearch && matchesGenre && matchesOrigin) {
+
+      if (matchesSearch && matchesGenre) {
         movie.style.display = 'block';
       } else {
         movie.style.display = 'none';

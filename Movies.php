@@ -10,6 +10,7 @@ $sql = "SELECT DISTINCT m.movie_id, m.title, m.genre, m.language, m.photo, m.des
         ORDER BY m.title ASC";
 $stmt = $conn->query($sql);
 $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -194,14 +195,10 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <option>Fantasy</option>
         </select>
       </div>
-      <div class="col-md-3">
-        <select id="originFilter" class="form-select" onchange="filterMovies()">
-          <option value="">All Origins</option>
-          <option>Bangladeshi</option>
-          <option>Hollywood</option>
-        </select>
+
+
       </div>
-    </div>
+
 
     <!-- Movies Grid -->
     <div class="row g-4 mt-1" id="moviesGrid">
@@ -235,25 +232,26 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
   function filterMovies() {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
     const genreFilter = document.getElementById('genreFilter').value;
-    const originFilter = document.getElementById('originFilter').value;
+
 
     const movies = document.querySelectorAll('.movie-item');
     movies.forEach(movie => {
       const title = movie.getAttribute('data-title').toLowerCase();
       const genre = movie.getAttribute('data-genre');
-      const origin = movie.getAttribute('data-origin');
+
 
       const matchesSearch = title.includes(searchInput);
       const matchesGenre = genreFilter === '' || genre === genreFilter;
-      const matchesOrigin = originFilter === '' || origin === originFilter;
 
-      if (matchesSearch && matchesGenre && matchesOrigin) {
+
+      if (matchesSearch && matchesGenre ) {
         movie.style.display = 'block';
       } else {
         movie.style.display = 'none';
       }
     });
   }
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
