@@ -212,7 +212,7 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
              data-origin="<?= htmlspecialchars($movie['language']) ?>">
 
           <div class="movie-card">
-            <img src="../admin/<?= htmlspecialchars($movie['photo']) ?>" alt="<?= htmlspecialchars($movie['title']) ?> Poster" class="movie-poster" />
+            <img src="admin/<?= htmlspecialchars($movie['photo']) ?>" alt="<?= htmlspecialchars($movie['title']) ?> Poster" class="movie-poster" />
             <div class="movie-body">
               <div class="movie-title"><?= htmlspecialchars($movie['title']) ?></div>
               <div class="movie-meta"><?= htmlspecialchars($movie['genre']) ?> | <?= htmlspecialchars($movie['duration_minutes']) ?> | Released: <?= htmlspecialchars($movie['release_year']) ?></div>
