@@ -549,16 +549,19 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
       }
 
       body.light-mode #mode-toggle {
+      margin-left: auto;
         border-color: #ffffff;
         color: #ffffff;
       }
 
       #mode-toggle:hover {
+      margin-left: auto;
         background: #ffd369;
         color: #1a1f2b;
       }
 
       body.light-mode #mode-toggle:hover {
+      margin-left: auto;
         background: #007acc;
         color: #fff;
       }
@@ -618,7 +621,7 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
       <?php if ($latest_booking): ?>
         <p><strong>Type:</strong> <?= htmlspecialchars($latest_booking['type']) ?></p>
         <p><strong>Event:</strong> <?= htmlspecialchars($latest_booking['event']) ?></p>
-        <p><strong>Booked On:</strong> <?= date("F j, Y, g:i a", strtotime($latest_booking['booking_time'])) ?></p>
+        <p><strong>Purchase On:</strong> <?= date("F j, Y, g:i a", strtotime($latest_booking['booking_time'])) ?></p>
         <p><strong>Location:</strong> <?= htmlspecialchars($latest_booking['location']) ?></p>
       <?php else: ?>
         <p>No tickets booked yet.</p>
