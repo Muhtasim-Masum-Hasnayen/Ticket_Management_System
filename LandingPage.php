@@ -35,12 +35,12 @@
     }
 
     .hero h1 {
-      font-size: 62px;
+      font-size: 42px;
       font-weight: bold;
     }
 
     .hero p {
-      font-size: 36px;
+      font-size: 32px;
     }
 
     .carousel-inner img {
@@ -63,7 +63,7 @@
         }
 
         .welcome-text h1 {
-          font-size: 48px;
+          font-size: 32px;
           font-weight: bold;
           color: #6c5ce7;
         }
@@ -106,6 +106,79 @@
     .dark-mode a, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode p {
       color: #11f1c2c !important;
     }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 25px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .modal-box h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .modal-box p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .btn-login {
+      background: #6c5ce7;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .btn-login:hover {
+      background: #5a4de1;
+    }
+
+    .btn-cancel {
+      background: #ddd;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-cancel:hover {
+      background: #bbb;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
 
   </style>
 </head>
@@ -129,7 +202,7 @@
 
     <a class="navbar-brand fw-bold fs-3 text-black d-flex align-items-center gap-2" href="#">
       <img src="SmartTicketLogo.png" alt="Logo" style="height: 55px;">
-      Smart<span class="text-warning">Ticket</span>
+      <span style="color: #00bfff;">Smart</span><span class="text-warning">Ticket</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
@@ -170,7 +243,21 @@
     <div class="container">
       <h1>Book Tickets for Movies, Parks & Museums</h1>
       <p>Colorful, Fast, and Easy Ticket Management System</p>
-      <a href="#" class="btn btn-light px-4 py-2 mt-3 fw-bold">Explore Tickets</a>
+      <!-- Explore Tickets Button -->
+      <a href="#" onclick="showLoginModal(event)" class="btn btn-light px-4 py-2 mt-3 fw-bold">Explore Tickets</a>
+
+      <!-- Login Modal -->
+      <div id="loginModal" class="modal-overlay">
+        <div class="modal-box">
+          <h2>🔐 Login Required</h2>
+          <p>Please login first to continue to Explore ticket.</p>
+          <div class="modal-actions">
+            <a href="login.php" class="btn-login">Login Now</a>
+            <button onclick="closeLoginModal()" class="btn-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -325,7 +412,16 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
     }
   });
 </script>
+<script>
+function showLoginModal(event) {
+    event.preventDefault(); // Prevent link navigation
+    document.getElementById("loginModal").style.display = "flex";
+}
 
+function closeLoginModal() {
+    document.getElementById("loginModal").style.display = "none";
+}
+</script>
 </body>
 
 </html>
