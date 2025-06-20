@@ -21,14 +21,14 @@
     }
 
     .navbar {
-      background-color: #ffffff;
+      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
       padding: 30px 0;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
 
     .hero {
-      background: linear-gradient(135deg, #ff4c60, #4ecdc4);
+      background: linear-gradient(to right, #ff6b6b, #6c5ce7);
       color: white;
       padding: 100px 0;
       text-align: center;

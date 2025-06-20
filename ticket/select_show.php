@@ -113,8 +113,23 @@ $showtimes = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </style>
 </head>
 <body>
+<a href="javascript:history.back()" style="
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid white;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  background-color: transparent;
+  transition: all 0.3s ease;
+" onmouseover="this.style.backgroundColor='white'; this.style.color='#333';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='white';">
+  ← Back
+</a>
+
   <div class="container">
     <div class="section-header">
+
       <h2>Select Show Time</h2>
     </div>
 

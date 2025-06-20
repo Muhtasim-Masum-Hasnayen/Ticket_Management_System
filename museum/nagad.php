@@ -189,6 +189,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Submit Payment</button>
         <?php endif; ?>
     </form>
+    <a href="javascript:history.back()" style="
+      display: inline-block;
+      padding: 10px 20px;
+      border: 2px solid black;
+      color: black;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      background-color: white;
+      transition: all 0.3s ease;
+    " onmouseover="this.style.backgroundColor='#b90000'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='black';">
+      ← Back
+    </a>
 
 </body>
 </html>

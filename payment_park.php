@@ -155,7 +155,7 @@ $total = number_format($booking['total_amount'], 2);
       </div>
     </div>
 
-    <a href="parks.php" class="btn-cancel">Cancel</a>
+    <a href="u_parks.php" class="btn-cancel">Cancel</a>
   </div>
 </body>
 </html>

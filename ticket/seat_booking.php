@@ -93,6 +93,19 @@ $bookedSeats = $stmt->fetchAll(PDO::FETCH_COLUMN);
   </style>
 </head>
 <body>
+<a href="javascript:history.back()" style="
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid white;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  background-color: transparent;
+  transition: all 0.3s ease;
+" onmouseover="this.style.backgroundColor='white'; this.style.color='#333';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='white';">
+  ← Back
+</a>
 
 <div class="container">
   <h2 class="text-center text-primary mb-4">Select Your Seats for <?= htmlspecialchars($details['movie']) ?></h2>
@@ -133,7 +146,7 @@ $bookedSeats = $stmt->fetchAll(PDO::FETCH_COLUMN);
     </div>
 
     <div class="text-center mt-4">
-      <button type="button" class="btn btn-confirm" disabled id="confirm-btn">Confirm Booking</button>
+      <button type="button" class="btn btn-confirm" disabled id="confirm-btn">Confirm </button>
 
     </div>
   </form>

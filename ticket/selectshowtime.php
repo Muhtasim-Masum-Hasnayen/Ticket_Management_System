@@ -113,9 +113,23 @@ $movie = $stmt->fetch(PDO::FETCH_ASSOC);
   </style>
 </head>
 <body>
+<a href="Movies.php" style="
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid white;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  background-color: transparent;
+  transition: all 0.3s ease;
+" onmouseover="this.style.backgroundColor='white'; this.style.color='#333';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='white';">
+  ← Back
+</a>
 
   <div class="container">
     <h2 class="section-title">🎬 Available Theaters for: <?= htmlspecialchars($movie['title']) ?></h2>
+
 
     <div class="row g-4">
       <?php foreach ($theaters as $theater): ?>

@@ -99,8 +99,26 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </style>
 </head>
 <body>
+  <a href="../dashboard.php" style="
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: transparent;
+      color: #fff;
+      text-decoration: none;
+      border: 2px solid white;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      transition: all 0.3s ease;
+  ">
+    <i class="fas fa-home"></i> Dashboard
+  </a>
 
   <div class="container">
+
     <h1>Movies Listing</h1>
 
     <!-- Search & Filter -->
@@ -147,23 +165,6 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       <?php endforeach; ?>
     </div>
-    <a href="../dashboard.php" style="
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 22px;
-        background: linear-gradient(to right, #ff6b6b, #6c5ce7);
-        color: #fff;
-        text-decoration: none;
-        border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        transition: all 0.3s ease;
-    ">
-      <i class="fas fa-home"></i> Dashboard
-    </a>
 
 
 <script>
@@ -199,5 +200,22 @@ $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ <a href="../dashboard.php" style="
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 22px;
+          background: linear-gradient(to right, #ff6b6b, #6c5ce7);
+          color: #fff;
+          text-decoration: none;
+          border: none;
+          border-radius: 10px;
+          font-weight: 600;
+          font-size: 15px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+          transition: all 0.3s ease;
+      ">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
 </body>
 </html>

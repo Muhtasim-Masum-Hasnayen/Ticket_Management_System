@@ -83,7 +83,26 @@ $parks = $stmt->fetchAll();
   </style>
 </head>
 <body>
+
   <div class="container py-4">
+    <a href="dashboard.php" style="
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 22px;
+        background: transparent;
+        color: #fff;
+        text-decoration: none;
+        border: 2px solid white;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        transition: all 0.3s ease;
+    ">
+      <i class="fas fa-home"></i> Dashboard
+    </a>
+
     <h1 class="text-center mb-4">Explore Parks & Ticket Packages</h1>
 
     <!-- Filter Section -->
@@ -179,25 +198,7 @@ $parks = $stmt->fetchAll();
       });
     }
   </script>
-  <!-- Place this after your theater cards section -->
-  <div style="text-align: center; margin-top: 60px;">
-    <a href="dashboard.php" style="
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 28px;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #fff;
-      text-decoration: none;
-      border: none;
-      border-radius: 100px;
-      font-weight: 600;
-      font-size: 16px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
-    ">
-      <i class="fas fa-home"></i> Dashboard
-    </a>
+
   </div>
 </body>
 </html>
