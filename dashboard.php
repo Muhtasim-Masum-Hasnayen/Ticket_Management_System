@@ -296,12 +296,18 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
 
       body.dark-mode .explore-section h2,
       body.dark-mode .offer-section h2 {
-        margin-top: 40px;
-        margin-bottom: 15px;
-        font-size: 20px;
-        border-bottom: 2px solid #ffd369;
-        padding-bottom: 5px;
-        color: #ffffff;
+        margin-top: 60px;
+                margin-bottom: 40px;
+                font-size: 32px;
+                font-weight: 800;
+                color: #ffffff;
+                background: linear-gradient(to left, #b33030, #3b2a84);
+                border-bottom: 2px solid #007acc;
+                padding: 20px 30px;
+                width: 100%;
+                display: block;
+                box-sizing: border-box;
+                text-align: center; /* ✅ Center the text */
       }
 
       body.dark-mode .explore-grid,
@@ -482,13 +488,21 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
 
       body.light-mode .explore-section h2,
       body.light-mode .offer-section h2 {
-        margin-top: 40px;
-        margin-bottom: 15px;
-        font-size: 20px;
-        border-bottom: 2px solid #007acc;
-        padding-bottom: 5px;
+        margin-top: 60px;
+        margin-bottom: 40px;
+        font-size: 32px;
+        font-weight: 800;
         color: #ffffff;
+        background: linear-gradient(to left, #b33030, #3b2a84);
+        border-bottom: 2px solid #007acc;
+        padding: 20px 30px;
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        text-align: center; /* ✅ Center the text */
       }
+
+
 
       body.light-mode .explore-grid,
       body.light-mode .offer-grid {
@@ -536,35 +550,37 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
         color: #ffffff;
       }
 
-      /* Toggle Button Style */
-      #mode-toggle {
-        cursor: pointer;
-        background: transparent;
-        border: 2px solid #ffd369;
-        padding: 6px 12px;
-        border-radius: 20px;
-        color: #ffd369;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
+     /* Toggle Button Style */
+     #mode-toggle {
+       cursor: pointer;
+       background: transparent;
+       border: 2px solid #ffd369;
+       padding: 6px 12px;
+       border-radius: 20px;
+       color: #ffd369;
+       font-weight: 600;
+       transition: all 0.3s ease;
+       margin-left: auto; /* Move to right if inside flex */
+     }
 
-      body.light-mode #mode-toggle {
-      margin-left: auto;
-        border-color: #ffffff;
-        color: #ffffff;
-      }
+     /* Light Mode Style */
+     body.light-mode #mode-toggle {
+       border-color: #ffffff;
+       color: #ffffff;
+     }
 
-      #mode-toggle:hover {
-      margin-left: auto;
-        background: #ffd369;
-        color: #1a1f2b;
-      }
+     /* Dark Mode Hover */
+     #mode-toggle:hover {
+       background: #ffd369;
+       color: #1a1f2b;
+     }
 
-      body.light-mode #mode-toggle:hover {
-      margin-left: auto;
-        background: #007acc;
-        color: #fff;
-      }
+     /* Light Mode Hover */
+     body.light-mode #mode-toggle:hover {
+       background: #007acc;
+       color: #fff;
+     }
+
 
   </style>
 </head>
@@ -747,6 +763,5 @@ $latest_booking = $stmtt->fetch(PDO::FETCH_ASSOC);
     </script>
 </body>
 </html>
-
 
 

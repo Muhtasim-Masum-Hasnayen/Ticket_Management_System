@@ -84,10 +84,23 @@
     .park-card { background-color: #4ecdc4; }
     .museum-card { background-color: #6c5ce7; }
 
-    .features i {
-      font-size: 40px;
-      color: #ff4c60;
-    }
+.features i {
+  font-size: 48px;
+  color: #ff4c60;
+  margin-bottom: 12px;
+}
+
+.features h5 {
+  font-weight: 600;
+}
+
+
+.feature-item {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+
 
     footer {
       background-color: #222;
@@ -353,29 +366,40 @@ const text = "Where Fun Meets Simplicity! Smart Ticket is your all-in-one soluti
 
 
   <!-- Features -->
-  <section class="features py-5 bg-light">
-    <div class="container text-center">
-      <h2 class="mb-4">Why Choose SmartTicket?</h2>
-      <div class="row g-4">
-        <div class="col-md-3">
-          <i class="fas fa-bolt"></i>
-          <h5 class="mt-2">Fast Service</h5>
-        </div>
-        <div class="col-md-3">
-          <i class="fas fa-lock"></i>
-          <h5 class="mt-2">Secure Payments</h5>
-        </div>
-        <div class="col-md-3">
-          <i class="fas fa-ticket-alt"></i>
-          <h5 class="mt-2">Digital Tickets</h5>
-        </div>
-        <div class="col-md-3">
-          <i class="fas fa-mobile-alt"></i>
-          <h5 class="mt-2">Mobile Friendly</h5>
-        </div>
+<!-- Features -->
+<section class="features py-5 bg-light">
+  <div class="container-fluid text-center">
+    <h2 class="mb-4">Why Choose SmartTicket?</h2>
+    <div class="row g-4">
+      <div class="col-2">
+        <i class="fas fa-bolt"></i>
+        <h5 class="mt-2">Fast Service</h5>
+      </div>
+      <div class="col-2">
+        <i class="fas fa-lock"></i>
+        <h5 class="mt-2">Secure Payments</h5>
+      </div>
+      <div class="col-2">
+        <i class="fas fa-ticket-alt"></i>
+        <h5 class="mt-2">Digital Tickets</h5>
+      </div>
+      <div class="col-2">
+        <i class="fas fa-mobile-alt"></i>
+        <h5 class="mt-2">Mobile Friendly</h5>
+      </div>
+      <div class="col-2">
+        <i class="fas fa-headset"></i>
+        <h5 class="mt-2">24/7 Support</h5>
+      </div>
+      <div class="col-2">
+        <i class="fas fa-check-circle"></i>
+        <h5 class="mt-2">Instant Confirmation</h5>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+
 
   <!-- Footer -->
   <footer class="text-center">
