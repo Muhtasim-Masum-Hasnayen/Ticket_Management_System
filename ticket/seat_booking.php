@@ -35,7 +35,15 @@ if (!$details) {
 // Get already booked seats
 $stmt = $conn->prepare("SELECT seat_number FROM bookings WHERE showtime_id = ?");
 $stmt->execute([$showtime_id]);
-$bookedSeats = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$bookedSeatsRaw = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+// Flatten comma-separated seat strings into a single array
+$bookedSeats = [];
+foreach ($bookedSeatsRaw as $seatString) {
+    $seats = array_map('trim', explode(',', $seatString));
+    $bookedSeats = array_merge($bookedSeats, $seats);
+}
+
 ?>
 
 <!DOCTYPE html>
