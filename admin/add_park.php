@@ -7,80 +7,118 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
 
-$type = 'park';
-$error = '';
-$success = '';
+$type     = 'park';
+$error    = '';
+$success  = '';
 
-$districts = ["Bagerhat", "Bandarban", "Barguna", "Barisal", "Bhola", "Bogra", "Brahmanbaria", "Chandpur", "Chapai Nawabganj", "Chattogram", "Chuadanga", "Comilla", "Cox's Bazar", "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", "Jhalokati", "Jhenaidah", "Joypurhat", "Khagrachhari", "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"];
+$districts = [
+    "Bagerhat","Bandarban","Barguna","Barisal","Bhola","Bogra","Brahmanbaria","Chandpur",
+    "Chapai Nawabganj","Chattogram","Chuadanga","Comilla","Cox's Bazar","Dhaka","Dinajpur",
+    "Faridpur","Feni","Gaibandha","Gazipur","Gopalganj","Habiganj","Jamalpur","Jashore",
+    "Jhalokati","Jhenaidah","Joypurhat","Khagrachhari","Khulna","Kishoreganj","Kurigram",
+    "Kushtia","Lakshmipur","Lalmonirhat","Madaripur","Magura","Manikganj","Meherpur",
+    "Moulvibazar","Munshiganj","Mymensingh","Naogaon","Narail","Narayanganj","Narsingdi",
+    "Natore","Netrokona","Nilphamari","Noakhali","Pabna","Panchagarh","Patuakhali",
+    "Pirojpur","Rajbari","Rajshahi","Rangamati","Rangpur","Satkhira","Shariatpur",
+    "Sherpur","Sirajganj","Sunamganj","Sylhet","Tangail","Thakurgaon"
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $location = $_POST['location'] ?? '';
 
-    $general_description = $_POST['general_description'] ?? '';
-    $general_price = $_POST['general_price'] ?? 0;
-    $general_available_ticket = $_POST['general_available_ticket'] ?? 0;
+    /* ----------  Grab & sanitise inputs ---------- */
+    $title       = trim($_POST['title']             ?? '');
+    $description = trim($_POST['description']       ?? '');
+    $location    = trim($_POST['location']          ?? '');
 
-    $family_description = $_POST['family_description'] ?? '';
-    $family_price = $_POST['family_price'] ?? 0;
-    $family_available_ticket = $_POST['family_available_ticket'] ?? 0;
+    $general_description   = trim($_POST['general_description']    ?? '');
+    $general_price         = floatval($_POST['general_price']      ?? 0);
+    $general_available     = intval($_POST['general_available_ticket'] ?? 0);
 
-    $student_description = $_POST['student_description'] ?? '';
-    $student_price = $_POST['student_price'] ?? 0;
-    $student_available_ticket = $_POST['student_available_ticket'] ?? 0;
+    $family_description    = trim($_POST['family_description']     ?? '');
+    $family_price          = floatval($_POST['family_price']       ?? 0);
+    $family_available      = intval($_POST['family_available_ticket'] ?? 0);
 
-    $corporate_description = $_POST['corporate_description'] ?? '';
-    $corporate_price = $_POST['corporate_price'] ?? 0;
-    $corporate_available_ticket = $_POST['corporate_available_ticket'] ?? 0;
+    $student_description   = trim($_POST['student_description']    ?? '');
+    $student_price         = floatval($_POST['student_price']      ?? 0);
+    $student_available     = intval($_POST['student_available_ticket'] ?? 0);
 
-    $uploadDir = 'uploads/parks/';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
+    $corporate_description = trim($_POST['corporate_description']  ?? '');
+    $corporate_price       = floatval($_POST['corporate_price']    ?? 0);
+    $corporate_available   = intval($_POST['corporate_available_ticket'] ?? 0);
 
+    /* ----------  File-upload handling ---------- */
     $photoPath = null;
-    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-        $photoTmp = $_FILES['photo']['tmp_name'];
-        $photoName = basename($_FILES['photo']['name']);
-        $ext = strtolower(pathinfo($photoName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
 
-        if (in_array($ext, $allowedExts)) {
-            $newName = uniqid('park_') . '.' . $ext;
-            $photoPath = $uploadDir . $newName;
-            move_uploaded_file($photoTmp, $photoPath);
+    if (!empty($_FILES['photo']['name'])) {
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $fileType     = mime_content_type($_FILES['photo']['tmp_name']);
+
+        if (in_array($fileType, $allowedTypes, true)) {
+            $uploadDir = __DIR__ . '/uploads/parks/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+            $safeName  = uniqid('park_', true) . '.' . $extension;
+            $photoPath = 'uploads/parks/' . $safeName;
+
+            if (!move_uploaded_file($_FILES['photo']['tmp_name'], $uploadDir . $safeName)) {
+                $error = '❌ Failed to upload the photo.';
+            }
         } else {
-            $error = "Invalid photo type.";
+            $error = '❌ Invalid photo type. Allowed: JPG, PNG, GIF, WEBP.';
         }
     }
 
-   if (!$error) {
-       try {
-           $stmt = $conn->prepare("INSERT INTO parks
-               (name, description, location, photo,
-                general_description, general_price, general_available_ticket,
-                family_description, family_price, family_available_ticket,
-                student_description, student_price, student_available_ticket,
-                corporate_description, corporate_price, corporate_available_ticket)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    /* ----------  Insert into database ---------- */
+    if (!$error) {
+        try {
+            $sql = "INSERT INTO parks
+                       (name, description, location, photo,
+                        general_description, general_price, general_available_ticket,
+                        family_description, family_price, family_available_ticket,
+                        student_description, student_price, student_available_ticket,
+                        corporate_description, corporate_price, corporate_available_ticket)
+                    VALUES
+                       (:name, :description, :location, :photo,
+                        :g_desc, :g_price, :g_avail,
+                        :f_desc, :f_price, :f_avail,
+                        :s_desc, :s_price, :s_avail,
+                        :c_desc, :c_price, :c_avail)";
 
-           $stmt->execute([
-               $title, $description, $location, $photoPath,
-               $general_description, $general_price, $general_available_ticket,
-               $family_description, $family_price, $family_available_ticket,
-               $student_description, $student_price, $student_available_ticket,
-               $corporate_description, $corporate_price, $corporate_available_ticket
-           ]);
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':name'     => $title,
+                ':description' => $description,
+                ':location' => $location,
+                ':photo'    => $photoPath,
 
-           $success = "🎉 Park added successfully!";
-       } catch (Exception $e) {
-           $error = "❌ Error: " . $e->getMessage();
-       }
-   }
+                ':g_desc'   => $general_description,
+                ':g_price'  => $general_price,
+                ':g_avail'  => $general_available,
+
+                ':f_desc'   => $family_description,
+                ':f_price'  => $family_price,
+                ':f_avail'  => $family_available,
+
+                ':s_desc'   => $student_description,
+                ':s_price'  => $student_price,
+                ':s_avail'  => $student_available,
+
+                ':c_desc'   => $corporate_description,
+                ':c_price'  => $corporate_price,
+                ':c_avail'  => $corporate_available
+            ]);
+
+            $success = '🎉 Park added successfully!';
+        } catch (PDOException $e) {
+            $error = '❌ DB Error: ' . $e->getMessage();
+        }
+    }
 }
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
