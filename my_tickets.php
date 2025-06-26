@@ -20,13 +20,13 @@ $user_photo = !empty($user['photo']) ? $user['photo'] : 'assets/user.jpg';
 
 // Fetch all movie bookings
 $movie_stmt = $conn->prepare("
-  SELECT 'Movie' AS type, b.booking_time, m.title AS event, t.name AS location, b.total_amount
+  SELECT 'Movie' AS type, st.show_time AS booking_time, m.title AS event, t.name AS location, b.total_amount
   FROM bookings b
   JOIN movie_showtimes st ON b.showtime_id = st.showtime_id
   JOIN movies m ON st.movie_id = m.movie_id
   JOIN theaters t ON st.theater_id = t.theater_id
   WHERE b.user_id = ?
-  ORDER BY b.booking_time DESC
+  ORDER BY st.show_time DESC
 ");
 $movie_stmt->execute([$user_id]);
 $movie_bookings = $movie_stmt->fetchAll(PDO::FETCH_ASSOC);
