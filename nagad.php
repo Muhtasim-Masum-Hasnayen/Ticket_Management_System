@@ -17,35 +17,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['verify_step']) && $_POST['verify_step'] == '1') {
         $show_verification_box = true;
     } elseif (isset($_POST['verification_code'])) {
-        if ($_POST['verification_code'] == '22') {
-                    $user_id = $_SESSION['id'];
-                    $payment_method = 'nagad';
-                    $transaction_id = $_POST['trx_id'];
-                    $showtime_id = $booking['showtime_id'];
-                    $seats = $booking['selected_seats']; // This should be an array
-                    $seat_str = implode(',', $seats); // Combine seats like "A1,A2,B3"
+       if ($_POST['verification_code'] == '22') {
+           $user_id = $_SESSION['id'];
+           $payment_method = 'nagad';
+           $transaction_id = $_POST['trx_id'];
+           $showtime_id = $booking['showtime_id'];
+           $seats = $booking['selected_seats']; // array
+           $price_per_seat = $amount / count($seats);
 
-                    // Insert a single booking row
-                    $stmt = $conn->prepare("INSERT INTO bookings (user_id, showtime_id, seat_number, payment_method, transaction_id, total_amount)
-                                            VALUES (?, ?, ?, ?, ?, ?)");
-                    $stmt->execute([$user_id, $showtime_id, $seat_str, $payment_method, $transaction_id, $amount]);
+           // Prepare insert for each seat
+           $stmt = $conn->prepare("INSERT INTO bookings (user_id, showtime_id, seat_number, payment_method, transaction_id, total_amount)
+                                   VALUES (?, ?, ?, ?, ?, ?)");
 
-                    $booking_id = $conn->lastInsertId(); // This is now the ID for all selected seats
+           foreach ($seats as $seat) {
+               $stmt->execute([$user_id, $showtime_id, $seat, $payment_method, $transaction_id, $price_per_seat]);
+           }
 
-                    // Mark each seat as booked in the 'seats' table
-                    $update_stmt = $conn->prepare("UPDATE seats SET is_booked = 1 WHERE showtime_id = ? AND seat_number = ?");
-                    foreach ($seats as $seat) {
-                        $update_stmt->execute([$showtime_id, $seat]);
-                    }
+           // Optional: get last booking ID
+           $last_booking_id = $conn->lastInsertId();
 
-                    // Clear pending booking session data
-                    unset($_SESSION['pending_booking']);
+           // Mark each seat as booked
+           $update_stmt = $conn->prepare("UPDATE seats SET is_booked = 1 WHERE showtime_id = ? AND seat_number = ?");
+           foreach ($seats as $seat) {
+               $update_stmt->execute([$showtime_id, $seat]);
+           }
 
-                    // Redirect to ticket
-                    header("Location: ticket/ticket.php?booking_id=" . $booking_id);
-                    exit;
+           $_SESSION['transaction_id'] = $transaction_id;
+           header("Location: ticket/ticket.php");
 
-                } else {
+           exit;
+       }
+ else {
             $error_message = "❌ Incorrect verification code.";
             $show_verification_box = true;
         }

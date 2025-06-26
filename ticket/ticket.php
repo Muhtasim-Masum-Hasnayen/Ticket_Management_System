@@ -2,34 +2,37 @@
 session_start();
 require_once '../db_connect.php';
 
-$booking_id = $_GET['booking_id'] ?? null;
-if (!$booking_id) {
-    echo "Invalid ticket.";
+if (!isset($_SESSION['transaction_id'])) {
+    echo "No transaction found.";
     exit;
 }
 
-// Fetch ticket and booking details
-$stmt = $conn->prepare("SELECT b.booking_id, b.seat_number, b.total_amount,
-                               m.title AS movie, t.name AS theater, s.show_time
-                        FROM bookings b
-                        JOIN movie_showtimes s ON b.showtime_id = s.showtime_id
-                        JOIN movies m ON s.movie_id = m.movie_id
-                        JOIN theaters t ON s.theater_id = t.theater_id
-                        WHERE b.booking_id = ?");
-$stmt->execute([$booking_id]);
-$ticket = $stmt->fetch(PDO::FETCH_ASSOC);
+$transaction_id = $_SESSION['transaction_id'];
 
-if (!$ticket) {
-    echo "Ticket not found.";
+// Get all bookings under this transaction
+$stmt = $conn->prepare("
+    SELECT b.*, m.title AS movie, t.name AS theater, s.show_time
+    FROM bookings b
+    JOIN movie_showtimes s ON b.showtime_id = s.showtime_id
+    JOIN movies m ON s.movie_id = m.movie_id
+    JOIN theaters t ON s.theater_id = t.theater_id
+    WHERE b.transaction_id = ?
+");
+$stmt->execute([$transaction_id]);
+$bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (!$bookings) {
+    echo "No booking found.";
     exit;
 }
+
+$info = $bookings[0]; // Common details
+$all_seats = array_column($bookings, 'seat_number');
+$total_amount = array_sum(array_column($bookings, 'total_amount'));
+
 // Clear pending booking data
-if (isset($_SESSION['pending_booking'])) {
-    unset($_SESSION['pending_booking']);
-}
-
-// Proceed with showing success message or redirecting
-
+unset($_SESSION['pending_booking']);
+unset($_SESSION['transaction_id']);
 ?>
 
 <!DOCTYPE html>
@@ -120,10 +123,6 @@ if (isset($_SESSION['pending_booking'])) {
         box-shadow: none !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        background-image: url('SmartTicketLogo.png') !important;
-        background-repeat: no-repeat !important;
-        background-position: right 30px top 30px !important;
-        background-size: 80px !important;
       }
 
       .btn-print,
@@ -154,39 +153,37 @@ if (isset($_SESSION['pending_booking'])) {
 <div class="ticket text-center">
   <h2>🎬 Movie Ticket</h2>
   <div class="ticket-info text-start">
-    <p><strong>Movie:</strong> <?= htmlspecialchars($ticket['movie']) ?></p>
-    <p><strong>Theater:</strong> <?= htmlspecialchars($ticket['theater']) ?></p>
-    <p><strong>Show Time:</strong> <?= htmlspecialchars($ticket['show_time']) ?></p>
-    <p><strong>Seat(s):</strong> <?= htmlspecialchars($ticket['seat_number']) ?></p>
-    <p><strong>Amount Paid:</strong> ৳<?= number_format($ticket['total_amount'], 2) ?></p>
-    <p><strong>Ticket ID:</strong> #<?= str_pad($ticket['booking_id'], 6, '0', STR_PAD_LEFT) ?></p>
+    <p><strong>Movie:</strong> <?= htmlspecialchars($info['movie']) ?></p>
+    <p><strong>Theater:</strong> <?= htmlspecialchars($info['theater']) ?></p>
+    <p><strong>Show Time:</strong> <?= htmlspecialchars($info['show_time']) ?></p>
+    <p><strong>Seat(s):</strong> <?= implode(', ', $all_seats) ?></p>
+    <p><strong>Total Paid:</strong> ৳<?= number_format($total_amount, 2) ?></p>
+    <p><strong>Transaction ID:</strong> <?= htmlspecialchars($transaction_id) ?></p>
   </div>
 
   <div class="text-center">
     <button class="btn btn-print" onclick="window.print()">Print Ticket</button>
   </div>
-
-
 </div>
-<!-- Place this after your theater cards section -->
-  <div style="text-align: center; margin-top: 60px;">
-    <a href="../dashboard.php" style="
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 28px;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #fff;
-      text-decoration: none;
-      border: none;
-      border-radius: 100px;
-      font-weight: 600;
-      font-size: 16px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
-    ">
-      <i class="fas fa-home"></i> Dashboard
-    </a>
-  </div>
+
+<div style="text-align: center; margin-top: 60px;">
+  <a href="../dashboard.php" style="
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: linear-gradient(to right, #141e30, #243b55);
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;">
+    <i class="fas fa-home"></i> Dashboard
+  </a>
+</div>
+
 </body>
 </html>
